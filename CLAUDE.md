@@ -10,13 +10,15 @@ Live domain: **https://cloud.vinsolutions.lk**. React SPA: home page, `/crm-solu
 - **Hosting = AWS Amplify connected to GitHub** (`DathaCode/Cloud-Consulting---Reselling-Platform`, branch `main`). Amplify builds from
   `amplify.yml`; there are **no GitHub Actions** — don't add workflows. Pushing to `main` may publish the site (if auto build is on),
   so never push; the owner does.
-- **Never name clients** in case studies or copy (no "Hiru News" or any other client). Describe by sector only.
+- **Client names: only the two owner-approved clients may be named** (with logos): **Asia Broadcasting Corporation** and
+  **Signature Shades** (Melbourne). Their case studies state facts only, never invented metrics. Every other client stays
+  anonymous (sector only); never mention "Hiru News" and keep Graphic-Cast unattributed.
 - **Never copy competitor copy.** The CRM page was inspired by vinsolutions.com (an unrelated US automotive CRM vendor);
   use them for structure ideas only, never their wording, and never mention them on the site.
 - **No em dashes (—) anywhere in website copy** (src/, index.html, public/). Use commas, colons, periods or parentheses.
 - **Never publish prices or budgets.** Pricing is quoted in LKR after requirement analysis — say that, nothing more.
-- Case-study figures for the 4 non-featured engagements are representative values approved by the owner; the 2 featured
-  AI products (Sinhala AI Proofreader, Graphic-Cast) are real in-house work.
+- Case studies: 2 named client projects (facts only), 2 featured in-house AI products (real), and 5 anonymous engagements
+  with owner-approved representative figures.
 - Keep the look: slightly dark, techy, brand teal from the logo. Verify UI changes visually (skill `ui-verification`).
 
 ## Stack

@@ -187,3 +187,27 @@ export const CRM_FAQ = [
         answer: 'Pricing depends on the option, number of users and scope, so we don’t publish fixed prices. After a free requirement analysis we share a clear proposal, with no obligation.',
     },
 ];
+
+// Comparison table. Values: 'yes' (included), 'partial' (limited, or a paid add-on), 'no' (not available).
+export const CRM_COMPARISON = {
+    eyebrow: 'Why VIN Cloud CRM',
+    title: 'More than software,',
+    highlight: 'a CRM that fits how you work.',
+    description:
+        'Generic tools give you features. We give you a CRM shaped around your sales, service and operations, connected to your systems and supported by a local team.',
+    columns: [
+        { id: 'vin', label: 'VIN Cloud CRM', highlight: true },
+        { id: 'generic', label: 'Off-the-shelf CRM' },
+        { id: 'manual', label: 'Spreadsheets & chat apps' },
+    ],
+    rows: [
+        { label: 'Complete CRM features: pipelines, tasks, reporting', vin: 'yes', generic: 'yes', manual: 'no' },
+        { label: 'WhatsApp, Facebook and web chat in one inbox', vin: 'yes', generic: 'partial', manual: 'partial' },
+        { label: 'AI lead scoring, drafted follow-ups and 24/7 assistant', vin: 'yes', generic: 'partial', manual: 'no' },
+        { label: 'Sinhala, Tamil and English templates', vin: 'yes', generic: 'partial', manual: 'no' },
+        { label: 'Built around your workflows: quotes, orders, production', vin: 'yes', generic: 'partial', manual: 'no' },
+        { label: 'Integrated with your ERP, accounting and legacy systems', vin: 'yes', generic: 'partial', manual: 'no' },
+        { label: 'Data migration, clean-up and team training included', vin: 'yes', generic: 'no', manual: 'no' },
+        { label: 'Ongoing optimization by a dedicated local team', vin: 'yes', generic: 'no', manual: 'no' },
+    ],
+};

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowRight, Check, Clock, Plug } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Check, Clock, MapPin, Plug } from 'lucide-react';
 import PageLayout from '../components/common/PageLayout';
 import Container from '../components/common/Container';
 import Section from '../components/common/Section';
@@ -15,10 +15,12 @@ import CrmDashboardMock from '../components/crm/CrmDashboardMock';
 import FeaturePreview from '../components/crm/FeaturePreview';
 import AiChatMock from '../components/crm/AiChatMock';
 import AddonsCarousel from '../components/crm/AddonsCarousel';
+import CrmComparison from '../components/crm/CrmComparison';
 import { useSeo } from '../utils/seo';
-import { SITE_URL } from '../utils/constants';
+import { CASE_STUDIES, SITE_URL } from '../utils/constants';
 import {
     CRM_HERO, CRM_MODELS, CRM_FEATURES, CRM_AI, CRM_ADDONS, CRM_INTEGRATIONS, CRM_INDUSTRIES, CRM_STEPS, CRM_RESULTS, CRM_FAQ,
+    CRM_COMPARISON,
 } from '../utils/crmContent';
 
 const CONTACT = '/?service=crm#contact';
@@ -145,6 +147,71 @@ const Features = () => (
                     </Reveal>
                 ))}
             </div>
+        </Container>
+    </Section>
+);
+
+const Comparison = () => (
+    <Section id="crm-compare" labelledBy="crm-compare-title" className="bg-ink-950/40">
+        <Container>
+            <SectionHeading
+                id="crm-compare-title"
+                eyebrow={CRM_COMPARISON.eyebrow}
+                title={CRM_COMPARISON.title}
+                highlight={CRM_COMPARISON.highlight}
+                description={CRM_COMPARISON.description}
+            />
+            <Reveal className="mx-auto mt-14 max-w-5xl rounded-3xl border border-white/10 bg-white/[0.02] p-4 md:p-8">
+                <CrmComparison data={CRM_COMPARISON} />
+            </Reveal>
+        </Container>
+    </Section>
+);
+
+const SPOTLIGHT = CASE_STUDIES.find((c) => c.id === 'signature-shades');
+
+const ClientSpotlight = () => (
+    <Section id="crm-client" labelledBy="crm-client-title">
+        <Container>
+            <Reveal>
+                <article className="grid gap-10 rounded-3xl border border-brand-300/20 bg-gradient-to-br from-brand-500/15 via-ink-850/60 to-glow/5 p-6 md:p-10 lg:grid-cols-12">
+                    <div className="lg:col-span-5">
+                        <span className="eyebrow">Client spotlight</span>
+                        <div className="mt-6 flex items-center gap-4">
+                            <span className="flex h-20 w-24 shrink-0 items-center justify-center rounded-2xl bg-white p-2 shadow-glow">
+                                <img src={SPOTLIGHT.client.logo} alt={`${SPOTLIGHT.client.name} logo`} className="h-full w-full object-contain" loading="lazy" />
+                            </span>
+                            <div>
+                                <p className="font-display text-xl font-semibold text-slate-50">{SPOTLIGHT.client.name}</p>
+                                <p className="flex items-center gap-1 text-sm text-slate-400"><MapPin size={14} aria-hidden="true" />{SPOTLIGHT.client.location}</p>
+                            </div>
+                        </div>
+                        <h2 id="crm-client-title" className="mt-6 text-2xl font-semibold md:text-3xl">{SPOTLIGHT.title}</h2>
+                        <p className="mt-3 text-sm leading-relaxed text-slate-400 md:text-base">{SPOTLIGHT.summary}</p>
+                        <Button href="/#work" variant="secondary" size="sm" className="mt-7">
+                            More client projects <ArrowUpRight size={16} />
+                        </Button>
+                    </div>
+                    <div className="lg:col-span-7">
+                        <dl className="grid grid-cols-3 gap-4 rounded-2xl border border-white/10 bg-ink-950/40 p-5">
+                            {SPOTLIGHT.results.map((r) => (
+                                <div key={r.label} className="flex flex-col-reverse">
+                                    <dt className="mt-1 text-xs leading-snug text-slate-400">{r.label}</dt>
+                                    <dd className="font-display text-3xl font-semibold text-gradient md:text-4xl">{r.value}</dd>
+                                </div>
+                            ))}
+                        </dl>
+                        <ul className="mt-6 space-y-3 text-sm">
+                            {SPOTLIGHT.highlights.map((h) => (
+                                <li key={h} className="flex items-start gap-2 text-slate-300">
+                                    <Check size={16} className="mt-0.5 shrink-0 text-glow" aria-hidden="true" />{h}
+                                </li>
+                            ))}
+                        </ul>
+                        <div className="mt-6 flex flex-wrap gap-1.5">{SPOTLIGHT.stack.map((t) => <Badge key={t}>{t}</Badge>)}</div>
+                    </div>
+                </article>
+            </Reveal>
         </Container>
     </Section>
 );
@@ -307,9 +374,11 @@ const CrmSolutions = () => {
             <Hero />
             <Models />
             <Features />
+            <Comparison />
             <AiSection />
             <Addons />
             <IntegrationsAndIndustries />
+            <ClientSpotlight />
             <ProcessAndResults />
             <FAQ
                 id="crm-faq"

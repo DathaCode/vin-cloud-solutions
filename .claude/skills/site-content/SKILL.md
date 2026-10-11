@@ -8,8 +8,9 @@ description: Rules and locations for editing VIN Cloud Solutions website copy �
 Almost all copy lives in **`src/utils/constants.js`**. Components only render it.
 
 ## Content rules (owner-mandated — never break)
-1. **No client names**, ever — not in case studies, blog posts, alt text or JSON-LD. Use sector descriptions only
-   ("Financial Services", "Broadcast Media").
+1. **Client names:** only **Asia Broadcasting Corporation** and **Signature Shades** (owner-approved, logos in
+   `public/brand/clients/`, listed in `CLIENTS`). Everything else is anonymous, sector only. Never "Hiru News";
+   Graphic-Cast stays unattributed. Named-client case studies use **facts only**, never invented percentages.
 2. **No prices, budgets or currency** on the site. If cost comes up: "a clear proposal with scope, timeline and cost after a free requirement analysis".
 3. Featured case studies (`featured: true`) are real in-house products: **Sinhala AI Proofreader** and **Graphic-Cast**. Don't inflate their facts.
    The other four (knowledge copilot, data migration, AWS platform, Azure + OCI) use owner-approved representative figures — keep them plausible.
@@ -30,12 +31,14 @@ Almost all copy lives in **`src/utils/constants.js`**. Components only render it
 | `AI_CAPABILITIES` | AI tabs; `outcome` labels feed the neural 3D scene (order matters) |
 | `PLATFORMS` | 3D ecosystem explorer + tabs (`infra/services/products`, node `color`) |
 | `INTEGRATIONS`, `PROCESS_STEPS`, `WHY_CHOOSE_US` | Their sections |
-| `CASE_CATEGORIES`, `CASE_STUDIES` | "Our work" filters, cards and detail dialog (`summary, challenge, solution, highlights, results[3], stack`) |
+| `CASE_CATEGORIES`, `CASE_STUDIES` | "Our work" filters, cards and detail dialog (`summary, challenge, solution, highlights, results[3], stack`). `client: { name, location, logo, wide? }` marks a named client project (large card with logo, listed first) |
+| `CLIENTS` | "Trusted by" logo strip on the home page (`wide: true` for banner-shaped logos) |
 | `FAQ_ITEMS` | FAQ + FAQPage JSON-LD (auto-generated) |
 | `SERVICES[].href` / `isNew` | Optional: service links to its own page (CRM → `/crm-solutions`) and shows a "New" badge |
 
 **CRM page copy** lives in `src/utils/crmContent.js` (`CRM_HERO`, `CRM_MODELS`, `CRM_FEATURES` with `preview` keys for
-`components/crm/FeaturePreview.jsx`, `CRM_AI`, `CRM_ADDONS`, `CRM_INTEGRATIONS`, `CRM_INDUSTRIES`, `CRM_STEPS`, `CRM_RESULTS`, `CRM_FAQ`).
+`components/crm/FeaturePreview.jsx`, `CRM_AI`, `CRM_ADDONS`, `CRM_INTEGRATIONS`, `CRM_INDUSTRIES`, `CRM_STEPS`, `CRM_RESULTS`, `CRM_FAQ`, `CRM_COMPARISON`
+(rows use 'yes' / 'partial' / 'no' per column)). The CRM page's client spotlight reads the Signature Shades case study.
 CRM offering (owner-confirmed): own **VIN CRM** product, implementation of Salesforce / Dynamics 365 / HubSpot / Zoho, custom-built CRM,
 and AI add-ons for any CRM. Multi-industry audience. Results are representative figures labeled "Typical results".
 
@@ -58,4 +61,4 @@ Human-facing version of these instructions: `docs/CONTENT_GUIDE.md` — keep bot
 
 ## After editing
 `npm run build`; screenshot the changed section (`ui-verification`). Grep for leaked client names or prices:
-`grep -rniE "hiru|\\$[0-9]|LKR|rs\\.? ?[0-9]" src index.html`.
+`grep -rniE "hiru|\\$ ?[0-9]|\\bLKR\\b" src/utils src/components src/pages index.html` (blog posts contain illustrative cloud-cost examples).

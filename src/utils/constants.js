@@ -310,10 +310,69 @@ export const CASE_CATEGORIES = [
     { id: 'data-migration', label: 'Data Migration' },
     { id: 'cloud-infra', label: 'Cloud Infrastructure' },
     { id: 'crm', label: 'CRM' },
+    { id: 'atlassian', label: 'Atlassian & DevOps' },
 ];
 
-// `featured` entries are in-house AI products; the rest are representative client engagements.
+// Named clients shown in the "Trusted by" strip and on their case studies (logos approved by the owner).
+export const CLIENTS = [
+    { name: 'Asia Broadcasting Corporation', logo: '/brand/clients/asia-broadcasting-corporation.png', width: 514, height: 74, wide: true },
+    { name: 'Signature Shades', logo: '/brand/clients/signature-shades.png', width: 520, height: 450 },
+];
+
+// `client` entries are named, owner-approved client projects (facts only, no invented metrics).
+// `featured` entries are in-house AI products; the rest are representative engagements.
 export const CASE_STUDIES = [
+    {
+        id: 'signature-shades',
+        category: 'crm',
+        client: { name: 'Signature Shades', location: 'Melbourne, Australia', logo: '/brand/clients/signature-shades.png' },
+        title: 'CRM & Order Management Platform',
+        sector: 'Window Furnishings Manufacturing',
+        summary:
+            'An end-to-end CRM and order management system for a made-to-measure blinds and curtains business: self-service ordering with live pricing, quotes, approvals, production planning, inventory and analytics in one platform.',
+        challenge:
+            'Orders for custom blinds and curtains arrived in many formats, every price depended on several components and customer-specific discounts, and the production team worked out fabric cuts, tube cuts and stock usage by hand.',
+        solution:
+            'We designed, built and host a secure web platform on AWS in the Melbourne region, with separate customer, admin and warehouse portals. Customers configure products and see accurate prices instantly; admins approve, edit and send orders to production; the system generates optimized cutting plans, worksheets and labels and deducts stock automatically.',
+        highlights: [
+            'Interactive order builder with real-time, server-verified pricing and per-customer discounts',
+            'Quote workflow: save, edit in bulk and convert quotes to orders in one click',
+            'Cutting optimization (MaxRects + genetic algorithm), PDF cutting plans, worksheets and production labels',
+            'Inventory with automatic stock deduction, low-stock alerts and usage forecasting',
+            'Analytics dashboards, role-based access and a complete field-level audit log',
+        ],
+        results: [
+            { value: '3', label: 'portals: customer, admin & warehouse' },
+            { value: '7', label: 'pricing components calculated live' },
+            { value: '2D', label: 'cutting optimization for every order' },
+        ],
+        stack: ['React', 'TypeScript', 'Node.js', 'PostgreSQL', 'AWS (Melbourne)', 'Docker'],
+    },
+    {
+        id: 'asia-broadcasting-corporation',
+        category: 'atlassian',
+        client: { name: 'Asia Broadcasting Corporation', location: 'Sri Lanka', logo: '/brand/clients/asia-broadcasting-corporation.png', wide: true },
+        title: 'Atlassian Licensing, Service Management & Custom Builds',
+        sector: 'Broadcast Media',
+        summary:
+            'Licensing, rollout and customization of Jira, Jira Service Management and Bitbucket for one of Sri Lanka’s largest media networks, extended with custom apps, integrations and dashboards.',
+        challenge:
+            'Fast-moving IT, engineering and broadcast operations teams needed one place to plan work, handle internal service requests and manage source code, with tools shaped around how a media network actually runs.',
+        solution:
+            'We handled Atlassian licensing and set up Jira, Jira Service Management and Bitbucket, then tailored them with custom workflows and automation, purpose-built Forge apps, integrations with internal systems, and reporting dashboards for management and IT leads.',
+        highlights: [
+            'Atlassian licensing, setup and ongoing administration',
+            'Jira Service Management portal with request types, SLAs and automation rules',
+            'Custom Forge apps and integrations with internal systems',
+            'Dashboards and reports for management, IT and delivery teams',
+        ],
+        results: [
+            { value: '3', label: 'Atlassian products licensed & rolled out' },
+            { value: 'Forge', label: 'custom apps built for their workflows' },
+            { value: '360°', label: 'licensing, setup, builds & support' },
+        ],
+        stack: ['Jira', 'Jira Service Management', 'Bitbucket', 'Atlassian Forge', 'Automation'],
+    },
     {
         id: 'sinhala-proofreader',
         category: 'ai-solution',
