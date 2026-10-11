@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Blog from './pages/Blog';
 import BlogPostPage from './pages/BlogPostPage';
 import NotFound from './pages/NotFound';
+import CrmSolutions from './pages/CrmSolutions';
 
 /** Scroll to top on navigation, or to the #hash target once it has rendered. */
 const ScrollManager = () => {
@@ -34,6 +35,7 @@ function App() {
             <ScrollManager />
             <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/crm-solutions" element={<CrmSolutions />} />
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/blog/:slug" element={<BlogPostPage />} />
                 <Route path="*" element={<NotFound />} />

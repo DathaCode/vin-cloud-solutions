@@ -2,7 +2,7 @@
 
 Marketing site for **VIN Cloud Solutions** (Ragama, Sri Lanka): AI solutions & integrations, web/mobile development,
 cloud consulting (AWS, Azure, Google, Microsoft 365, Oracle, Atlassian), data migration and managed cloud.
-Live domain: **https://cloud.vinsolutions.lk**. Single-page React app with a markdown blog.
+Live domain: **https://cloud.vinsolutions.lk**. React SPA: home page, `/crm-solutions` page, markdown blog.
 
 ## Working rules (from the owner)
 - **Never commit, push or create branches.** The owner commits everything. Leave changes in the working tree.
@@ -11,6 +11,8 @@ Live domain: **https://cloud.vinsolutions.lk**. Single-page React app with a mar
   `amplify.yml`; there are **no GitHub Actions** — don't add workflows. Pushing to `main` may publish the site (if auto build is on),
   so never push; the owner does.
 - **Never name clients** in case studies or copy (no "Hiru News" or any other client). Describe by sector only.
+- **Never copy competitor copy.** The CRM page was inspired by vinsolutions.com (an unrelated US automotive CRM vendor);
+  use them for structure ideas only, never their wording, and never mention them on the site.
 - **No em dashes (—) anywhere in website copy** (src/, index.html, public/). Use commas, colons, periods or parentheses.
 - **Never publish prices or budgets.** Pricing is quoted in LKR after requirement analysis — say that, nothing more.
 - Case-study figures for the 4 non-featured engagements are representative values approved by the owner; the 2 featured
@@ -33,7 +35,9 @@ npm run preview   # serve dist/ on :4173 (use for screenshots)
 | Path | What |
 |---|---|
 | `src/utils/constants.js` | **All site copy & data**: company info, nav, services, AI capabilities, platforms, integrations, process, case studies, FAQ, socials |
-| `src/components/sections/` | Home page sections (Hero, Services, AIInnovation, PlatformExplorer, CaseStudies, Integrations, Process, WhyChooseUs, BlogTeaser, FAQ, Contact) |
+| `src/utils/crmContent.js` | Copy for the `/crm-solutions` page (hero, 4 delivery models, features, AI, add-ons, industries, steps, results, CRM FAQ) |
+| `src/pages/CrmSolutions.jsx` + `src/components/crm/` | CRM page and its HTML/CSS mocks (dashboard, feature previews, AI chat, add-ons carousel) |
+| `src/components/sections/` | Home page sections (Hero, Services, AIInnovation, CrmTeaser, PlatformExplorer, CaseStudies, Integrations, Process, WhyChooseUs, BlogTeaser, FAQ, Contact). `FAQ` takes `items/id/title` props and is reused on the CRM page |
 | `src/components/common/` | Design-system pieces: Button, Badge, Section, SectionHeading, Reveal, SpotlightCard, Dialog, Logo, Icon, BrandIcon, Navbar, Footer, PageLayout, WhatsAppButton |
 | `src/components/three/` | 3D explorers (HeroGlobe, NeuralScene, EcosystemScene) + `SceneMount` lazy/visibility wrapper |
 | `src/components/contact/` | Multi-step project request form (Formspree) |
@@ -78,3 +82,7 @@ Formspree endpoint `https://formspree.io/f/mppqanpv` (`VITE_FORMSPREE_ENDPOINT` 
 - A clean-copy build (`npm ci --cache .npm --prefer-offline && npm run build`, as in `amplify.yml`) was verified 2026-10-05 — re-run it after dependency changes.
 - The CSP in `customHttp.yml` was verified locally (3D, blog deep links, form) — any new third-party domain must be added to it.
 - react-markdown runs without remark-gfm: blog tables/strikethrough don't render.
+- Headless Chrome with `--use-angle=swiftshader` draws fake horizontal "washed" bands across translucent cards on long pages. For pages
+  without WebGL, screenshot with `--disable-gpu` instead before treating it as a CSS bug.
+- `vite preview` may listen on IPv6 only; if Puppeteer gets ERR_CONNECTION_REFUSED on localhost, use `http://[::1]:4173`.
+- Scroll-snap carousels with horizontal padding need matching `scroll-px-*`, or the first snap shifts scrollLeft and "at start" logic breaks.

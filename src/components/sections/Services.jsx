@@ -9,11 +9,13 @@ import SpotlightCard from '../common/SpotlightCard';
 import Reveal from '../common/Reveal';
 import Badge from '../common/Badge';
 import Icon from '../common/Icon';
+import FeaturePreview from '../crm/FeaturePreview';
 
-// Bento layout: featured AI card is wide, licensing closes the grid as a full-width banner.
+// Bento layout: AI and CRM cards span two columns; licensing fills the last cell.
 const SPANS = {
     ai: 'md:col-span-2',
-    licensing: 'md:col-span-2 lg:col-span-3',
+    crm: 'md:col-span-2',
+    licensing: 'md:col-span-2 lg:col-span-1',
 };
 
 // Small illustrative copilot exchange that fills the featured AI card.
@@ -34,7 +36,6 @@ const AIPreview = () => (
 );
 
 const ServiceCard = ({ service, index }) => {
-    const wide = service.id === 'licensing';
     const featured = service.featured;
 
     return (
@@ -45,20 +46,21 @@ const ServiceCard = ({ service, index }) => {
                 className={`h-full scroll-mt-28 ${featured ? 'bg-gradient-to-br from-brand-500/15 via-white/[0.03] to-ai/10' : ''}`}
                 glow={featured ? 'rgba(167,139,250,0.16)' : undefined}
             >
-                <div className={`flex h-full flex-col gap-6 p-7 md:p-8 ${wide ? 'lg:flex-row lg:items-center lg:gap-12' : ''}`}>
-                    <div className={wide ? 'lg:w-1/2' : ''}>
+                <div className="flex h-full flex-col gap-6 p-7 md:p-8">
+                    <div>
                         <div className="mb-6 flex items-center justify-between">
                             <span className={`grid h-12 w-12 place-items-center rounded-xl border ${featured ? 'border-ai/40 bg-ai/15 text-violet-200' : 'border-brand-300/25 bg-brand-500/10 text-brand-200'}`}>
                                 <Icon name={service.icon} size={22} />
                             </span>
                             {featured && <Badge variant="ai">New · Flagship</Badge>}
+                            {service.isNew && <Badge variant="accent">New</Badge>}
                         </div>
                         <h3 className={`font-semibold ${featured ? 'text-2xl md:text-3xl' : 'text-xl'}`}>{service.title}</h3>
                         <p className="mt-3 text-sm leading-relaxed text-slate-400 md:text-base">{service.description}</p>
                     </div>
 
-                    <div className={`flex flex-1 flex-col justify-between gap-6 ${wide ? 'lg:w-1/2' : ''}`}>
-                        <ul className={`grid gap-2.5 text-sm ${featured || wide ? 'sm:grid-cols-2' : ''}`}>
+                    <div className="flex flex-1 flex-col justify-between gap-6">
+                        <ul className={`grid gap-2.5 text-sm ${featured || service.isNew ? 'sm:grid-cols-2' : ''}`}>
                             {service.features.map((feature) => (
                                 <li key={feature} className="flex items-start gap-2 text-slate-300">
                                     <Check size={16} className="mt-0.5 shrink-0 text-glow" aria-hidden="true" />
@@ -67,16 +69,17 @@ const ServiceCard = ({ service, index }) => {
                             ))}
                         </ul>
                         {featured && <AIPreview />}
+                        {service.id === 'crm' && <FeaturePreview type="pipeline" />}
                         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/5 pt-5">
                             <div className="flex flex-wrap gap-1.5">
                                 {service.tags.map((t) => <Badge key={t}>{t}</Badge>)}
                             </div>
                             <Link
-                                to={service.id === 'ai' ? '/#ai' : `/?service=${service.id}#contact`}
+                                to={service.href || (service.id === 'ai' ? '/#ai' : `/?service=${service.id}#contact`)}
                                 className="inline-flex items-center gap-1 text-sm font-semibold text-brand-200 hover:text-glow"
                                 aria-label={`Learn more about ${service.title}`}
                             >
-                                {service.id === 'ai' ? 'Explore AI' : 'Discuss'} <ArrowUpRight size={16} />
+                                {service.href ? 'Explore CRM' : service.id === 'ai' ? 'Explore AI' : 'Discuss'} <ArrowUpRight size={16} />
                             </Link>
                         </div>
                     </div>
@@ -94,7 +97,7 @@ const Services = () => (
                 eyebrow="What we do"
                 title="End-to-end technology services,"
                 highlight="one accountable partner."
-                description="Strategic thinking combined with hands-on engineering, from AI and custom software to cloud infrastructure, integrations and licensing."
+                description="Strategic thinking combined with hands-on engineering, from AI and custom software to CRM, cloud infrastructure, integrations and licensing."
             />
             <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
                 {SERVICES.map((service, index) => (

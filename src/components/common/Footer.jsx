@@ -68,7 +68,7 @@ const Footer = () => {
                     <div className="md:col-span-3">
                         <FooterColumn title="Services">
                             {SERVICES.map((s) => (
-                                <FooterLink key={s.id} href={`/#service-${s.id}`}>{s.short}</FooterLink>
+                                <FooterLink key={s.id} href={s.href || `/#service-${s.id}`}>{s.short}</FooterLink>
                             ))}
                         </FooterColumn>
                     </div>

@@ -30,7 +30,7 @@ export const NAV_LINKS = [
     { name: 'Services', href: '/#services' },
     { name: 'AI', href: '/#ai' },
     { name: 'Platforms', href: '/#platforms' },
-    { name: 'Integrations', href: '/#integrations' },
+    { name: 'CRM', href: '/crm-solutions' },
     { name: 'Work', href: '/#work' },
     { name: 'Insights', href: '/blog' },
 ];
@@ -93,6 +93,18 @@ export const SERVICES = [
             'Connect anything: SSO, ERPs, CRMs, collaboration suites and custom systems via APIs, events and low-code automation.',
         features: ['API & middleware development', 'Identity & SSO', 'ERP / CRM integrations', 'Power Automate, Apps Script, Forge'],
         tags: ['REST', 'GraphQL', 'Webhooks', 'iPaaS'],
+    },
+    {
+        id: 'crm',
+        icon: 'Users',
+        href: '/crm-solutions',
+        title: 'CRM Solutions',
+        short: 'CRM Solutions',
+        description:
+            'Win and keep more customers with an intelligent CRM: our own VIN CRM, Salesforce, Dynamics 365, HubSpot or Zoho, or a custom build, with AI built in.',
+        features: ['VIN CRM, ready in days', 'Salesforce, Dynamics 365, HubSpot & Zoho', 'Custom CRM (web + mobile)', 'AI lead scoring & 24/7 assistant', 'WhatsApp & omnichannel inbox', 'Data migration & training'],
+        tags: ['VIN CRM', 'Salesforce', 'Dynamics 365', 'HubSpot', 'Zoho'],
+        isNew: true,
     },
     {
         id: 'licensing',
@@ -297,6 +309,7 @@ export const CASE_CATEGORIES = [
     { id: 'ai-integration', label: 'AI Integration' },
     { id: 'data-migration', label: 'Data Migration' },
     { id: 'cloud-infra', label: 'Cloud Infrastructure' },
+    { id: 'crm', label: 'CRM' },
 ];
 
 // `featured` entries are in-house AI products; the rest are representative client engagements.
@@ -382,6 +395,22 @@ export const CASE_STUDIES = [
             { value: '< 2 h', label: 'cutover downtime' },
         ],
         stack: ['Oracle Autonomous DB', 'Azure SQL', 'Azure Data Factory', 'Python'],
+    },
+    {
+        id: 'omnichannel-crm',
+        category: 'crm',
+        title: 'Omnichannel CRM with AI Assistant',
+        sector: 'Retail & E-commerce',
+        summary: 'Replaced spreadsheets and personal phones with one CRM that captures every WhatsApp, web and showroom enquiry, scores it and follows up automatically.',
+        challenge: 'Leads arrived through WhatsApp, Facebook, the website and walk-ins, but lived in staff phones and spreadsheets. Follow-ups were missed and managers had no visibility.',
+        solution: 'VIN CRM with an omnichannel inbox, automated follow-up sequences, AI lead scoring and a 24/7 WhatsApp assistant that qualifies enquiries and books store visits, plus a mobile app for the sales floor.',
+        highlights: ['Every enquiry logged on one customer record', 'AI assistant hands warm leads to the right salesperson', 'Live dashboards for response time and conversion'],
+        results: [
+            { value: '+32%', label: 'lead-to-sale conversion' },
+            { value: '< 1 min', label: 'first response, 24/7' },
+            { value: '40%', label: 'less manual data entry' },
+        ],
+        stack: ['VIN CRM', 'WhatsApp Business API', 'Meta Lead Ads', 'AI lead scoring'],
     },
     {
         id: 'aws-platform',

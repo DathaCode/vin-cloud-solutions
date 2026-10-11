@@ -32,6 +32,12 @@ Almost all copy lives in **`src/utils/constants.js`**. Components only render it
 | `INTEGRATIONS`, `PROCESS_STEPS`, `WHY_CHOOSE_US` | Their sections |
 | `CASE_CATEGORIES`, `CASE_STUDIES` | "Our work" filters, cards and detail dialog (`summary, challenge, solution, highlights, results[3], stack`) |
 | `FAQ_ITEMS` | FAQ + FAQPage JSON-LD (auto-generated) |
+| `SERVICES[].href` / `isNew` | Optional: service links to its own page (CRM → `/crm-solutions`) and shows a "New" badge |
+
+**CRM page copy** lives in `src/utils/crmContent.js` (`CRM_HERO`, `CRM_MODELS`, `CRM_FEATURES` with `preview` keys for
+`components/crm/FeaturePreview.jsx`, `CRM_AI`, `CRM_ADDONS`, `CRM_INTEGRATIONS`, `CRM_INDUSTRIES`, `CRM_STEPS`, `CRM_RESULTS`, `CRM_FAQ`).
+CRM offering (owner-confirmed): own **VIN CRM** product, implementation of Salesforce / Dynamics 365 / HubSpot / Zoho, custom-built CRM,
+and AI add-ons for any CRM. Multi-industry audience. Results are representative figures labeled "Typical results".
 
 Icon names in data must exist in `src/components/common/Icon.jsx`.
 Request-form-only options (stages, timelines, contact methods) live in `src/components/contact/requestOptions.js`.

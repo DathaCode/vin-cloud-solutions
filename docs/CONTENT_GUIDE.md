@@ -23,6 +23,11 @@ After any change: `npm run dev` to check it, then follow [DEPLOYMENT.md](DEPLOYM
 | Our work (case studies) | `CASE_STUDIES` + filter tabs `CASE_CATEGORIES` |
 | FAQ | `FAQ_ITEMS` (also published to Google as FAQ structured data) |
 
+### CRM Solutions page (`/crm-solutions`)
+All text for the CRM page is in `src/utils/crmContent.js`: hero, the four ways to get started (VIN CRM, leading platforms,
+custom build, AI add-ons), features, AI section, add-ons carousel, integrations, industries, steps, typical results and the CRM FAQ.
+Add or remove an add-on by editing `CRM_ADDONS`; the carousel adjusts automatically.
+
 Icons are referenced by name (e.g. `icon: 'Cloud'`). New names must also be added to `src/components/common/Icon.jsx`
 (names from [lucide.dev/icons](https://lucide.dev/icons)).
 

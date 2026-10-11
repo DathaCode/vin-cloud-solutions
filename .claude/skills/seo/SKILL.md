@@ -14,6 +14,7 @@ Domain: **https://cloud.vinsolutions.lk** (`SITE_URL` in constants.js). Target: 
 | `src/utils/seo.js` → `useSeo({ title, description, keywords, image, path, type, jsonLd })` | Call once per page. Upserts a single copy of each meta tag + canonical; optional route JSON-LD script removed on unmount. |
 | `FAQ.jsx` | Emits FAQPage JSON-LD from `FAQ_ITEMS`. |
 | `BlogPostPage.jsx` | BlogPosting JSON-LD per article. |
+| `CrmSolutions.jsx` | `useSeo` with Service JSON-LD; its FAQ section emits a second FAQPage. Listed in sitemap and the OfferCatalog in `index.html`. |
 | `public/sitemap.xml`, `public/robots.txt` | Hand-maintained. Add every new route / blog post. |
 | `public/brand/og-image.png` | 1200×630 share image (generated — see below). |
 | `public/favicon*.png`, `favicon.ico`, `apple-touch-icon.png`, `brand/icon-192/512.png`, `site.webmanifest` | Icons generated from `design/brand-source/vin-mark-original.png`. |

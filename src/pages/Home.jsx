@@ -12,6 +12,7 @@ import CaseStudies from '../components/sections/CaseStudies';
 import BlogTeaser from '../components/sections/BlogTeaser';
 import FAQ from '../components/sections/FAQ';
 import Contact from '../components/sections/Contact';
+import CrmTeaser from '../components/sections/CrmTeaser';
 import { useSeo } from '../utils/seo';
 
 const Home = () => {
@@ -23,6 +24,7 @@ const Home = () => {
             <Partners />
             <Services />
             <AIInnovation />
+            <CrmTeaser />
             <PlatformExplorer />
             <CaseStudies />
             <Integrations />

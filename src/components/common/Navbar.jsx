@@ -38,7 +38,7 @@ const ServicesMenu = () => {
                             {SERVICES.map((s) => (
                                 <a
                                     key={s.id}
-                                    href={`/#service-${s.id}`}
+                                    href={s.href || `/#service-${s.id}`}
                                     onClick={() => setOpen(false)}
                                     className="group flex gap-3 rounded-xl p-3 transition-colors hover:bg-white/5"
                                 >

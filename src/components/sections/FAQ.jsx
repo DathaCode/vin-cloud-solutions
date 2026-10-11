@@ -45,33 +45,39 @@ const FAQItem = ({ item, defaultOpen = false }) => {
 };
 
 // FAQPage structured data lets search engines show these answers as rich results.
-const faqJsonLd = {
+const toJsonLd = (items) => ({
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: FAQ_ITEMS.map((f) => ({
+    mainEntity: items.map((f) => ({
         '@type': 'Question',
         name: f.question,
         acceptedAnswer: { '@type': 'Answer', text: f.answer },
     })),
-};
+});
 
-const FAQ = () => (
-    <Section id="faq" labelledBy="faq-title">
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+const FAQ = ({
+    items = FAQ_ITEMS,
+    id = 'faq',
+    title = 'Questions,',
+    highlight = 'answered.',
+    description = 'Can’t find what you need? Ask us directly. We reply within one business day.',
+}) => (
+    <Section id={id} labelledBy={`${id}-title`}>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(toJsonLd(items)) }} />
         <Container>
             <div className="grid gap-12 lg:grid-cols-12">
                 <div className="lg:col-span-4">
                     <SectionHeading
-                        id="faq-title"
+                        id={`${id}-title`}
                         align="left"
                         eyebrow="FAQ"
-                        title="Questions,"
-                        highlight="answered."
-                        description="Can’t find what you need? Ask us directly. We reply within one business day."
+                        title={title}
+                        highlight={highlight}
+                        description={description}
                     />
                 </div>
                 <Reveal className="flex flex-col gap-3 lg:col-span-8">
-                    {FAQ_ITEMS.map((item, index) => (
+                    {items.map((item, index) => (
                         <FAQItem key={item.question} item={item} defaultOpen={index === 0} />
                     ))}
                 </Reveal>
