@@ -32,6 +32,7 @@ description: Conventions for building or changing React components, home-page se
 | `Button` | variants `primary|secondary|ghost`, sizes `sm|md|lg`. **`href` starting with `/` renders a router `<Link>`** (keeps query prefill without reload). |
 | `Badge` | `default|accent|ai` pill, mono font. |
 | `Dialog` | accessible modal (Esc, backdrop, focus trap, scroll lock). Pass a **stable** `onClose` (useCallback). |
+| `AutoScrollSlider` | endless slow left drift (`speed` px/s). Pauses on hover, keyboard focus, drag, off-screen, hidden tab, `paused` prop; resumes ~2.5 s after interaction. Arrows, ←/→, mouse drag, swipe, pause/play, counter + progress. Loops (with clones) only when items overflow. `renderItem(item, { clone })`: clones must set `tabIndex={-1}`. Used by Our work. |
 | `Logo` | mark on a light tile (the dark arrow in the logo is invisible on dark bg — always keep a light tile behind the logo). |
 | `PageLayout` | skip link + Navbar + `<main id="main">` + Footer + floating WhatsApp button. Every page uses it. |
 

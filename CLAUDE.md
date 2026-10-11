@@ -87,4 +87,7 @@ Formspree endpoint `https://formspree.io/f/mppqanpv` (`VITE_FORMSPREE_ENDPOINT` 
 - Headless Chrome with `--use-angle=swiftshader` draws fake horizontal "washed" bands across translucent cards on long pages. For pages
   without WebGL, screenshot with `--disable-gpu` instead before treating it as a CSS bug.
 - `vite preview` may listen on IPv6 only; if Puppeteer gets ERR_CONNECTION_REFUSED on localhost, use `http://[::1]:4173`.
+- Never use `inert` on carousel loop clones: it also blocks mouse clicks. Use `aria-hidden` + `tabIndex={-1}` on their controls
+  (`AutoScrollSlider` passes `{ clone }` to `renderItem`).
+- In Puppeteer tests, re-measure element coordinates after any `page.click()`: it scrolls the page and stale points miss.
 - Scroll-snap carousels with horizontal padding need matching `scroll-px-*`, or the first snap shifts scrollLeft and "at start" logic breaks.
