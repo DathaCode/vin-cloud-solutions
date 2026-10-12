@@ -8,8 +8,10 @@ description: Rules and locations for editing VIN Cloud Solutions website copy �
 Almost all copy lives in **`src/utils/constants.js`**. Components only render it.
 
 ## Content rules (owner-mandated — never break)
+0. **Every copy change is trilingual.** Update the Swedish and Italian overlays / UI files / blog translations in the same
+   task and run `npm run i18n:check` then `npm run i18n:accept` (skill `i18n`).
 1. **Client names:** only **Asia Broadcasting Corporation** and **Signature Shades** (owner-approved, logos in
-   `public/brand/clients/`, listed in `CLIENTS`). Everything else is anonymous, sector only. Never "Hiru News";
+   `public/brand/clients/`, shown only on their Our work case studies). Everything else is anonymous, sector only. Never "Hiru News";
    Graphic-Cast stays unattributed. Named-client case studies use **facts only**, never invented percentages.
 2. **No prices, budgets or currency** on the site. If cost comes up: "a clear proposal with scope, timeline and cost after a free requirement analysis".
 3. Featured case studies (`featured: true`) are real in-house products: **Sinhala AI Proofreader** and **Graphic-Cast**. Don't inflate their facts.
@@ -32,7 +34,6 @@ Almost all copy lives in **`src/utils/constants.js`**. Components only render it
 | `PLATFORMS` | 3D ecosystem explorer + tabs (`infra/services/products`, node `color`) |
 | `INTEGRATIONS`, `PROCESS_STEPS`, `WHY_CHOOSE_US` | Their sections |
 | `CASE_CATEGORIES`, `CASE_STUDIES` | "Our work" filters, cards and detail dialog (`summary, challenge, solution, highlights, results[3], stack`). `client: { name, location, logo, wide? }` marks a named client project (large card with logo, listed first) |
-| `CLIENTS` | "Trusted by" logo strip on the home page (`wide: true` for banner-shaped logos) |
 | `FAQ_ITEMS` | FAQ + FAQPage JSON-LD (auto-generated) |
 | `SERVICES[].href` / `isNew` | Optional: service links to its own page (CRM → `/crm-solutions`) and shows a "New" badge |
 

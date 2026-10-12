@@ -1,23 +1,25 @@
 import React, { lazy, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Hand, Server, Wrench, Boxes } from 'lucide-react';
-import { PLATFORMS } from '../../utils/constants';
 import Container from '../common/Container';
 import Section from '../common/Section';
 import SectionHeading from '../common/SectionHeading';
 import Reveal from '../common/Reveal';
 import Button from '../common/Button';
 import SceneMount from '../three/SceneMount';
+import { useI18n } from '../../i18n/I18nProvider';
 
 const EcosystemScene = lazy(() => import('../three/EcosystemScene'));
 
 const GROUPS = [
-    { key: 'infra', label: 'Infrastructure', Icon: Server },
-    { key: 'services', label: 'Services', Icon: Wrench },
-    { key: 'products', label: 'Products', Icon: Boxes },
+    { key: 'infra', Icon: Server },
+    { key: 'services', Icon: Wrench },
+    { key: 'products', Icon: Boxes },
 ];
 
 const PlatformExplorer = () => {
+    const { t, c } = useI18n();
+    const PLATFORMS = c.PLATFORMS;
     const [activeId, setActiveId] = useState(PLATFORMS[0].id);
     const platform = PLATFORMS.find((p) => p.id === activeId);
 
@@ -26,15 +28,15 @@ const PlatformExplorer = () => {
             <Container>
                 <SectionHeading
                     id="platforms-title"
-                    eyebrow="Cloud ecosystem explorer"
-                    title="Every major cloud and SaaS platform,"
-                    highlight="orchestrated together."
-                    description="Infrastructure, services and products across Google, Microsoft 365, Azure, AWS, Oracle and Atlassian. Select a platform in 3D to explore what we deliver."
+                    eyebrow={t('platforms.eyebrow')}
+                    title={t('platforms.title')}
+                    highlight={t('platforms.highlight')}
+                    description={t('platforms.description')}
                 />
 
                 {/* Accessible platform picker (also the primary control on touch devices) */}
                 <Reveal className="mt-12 flex justify-center">
-                    <div role="tablist" aria-label="Platforms" className="flex max-w-full gap-1.5 overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.02] p-1.5">
+                    <div role="tablist" aria-label={t('platforms.tablist')} className="flex max-w-full gap-1.5 overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.02] p-1.5">
                         {PLATFORMS.map((p) => (
                             <button
                                 key={p.id}
@@ -61,10 +63,11 @@ const PlatformExplorer = () => {
                                 platforms={PLATFORMS}
                                 activeId={activeId}
                                 onSelect={setActiveId}
+                                ariaLabel={t('platforms.sceneAria')}
                                 className="absolute inset-0"
                             />
                             <p className="pointer-events-none absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap font-mono text-[11px] text-slate-500">
-                                <Hand size={12} /> click a node · drag to orbit
+                                <Hand size={12} /> {t('platforms.hint')}
                             </p>
                         </div>
                     </Reveal>
@@ -88,10 +91,10 @@ const PlatformExplorer = () => {
                                     <p className="mt-3 text-sm leading-relaxed text-slate-400 md:text-base">{platform.summary}</p>
 
                                     <div className="mt-7 space-y-5">
-                                        {GROUPS.map(({ key, label, Icon }) => (
+                                        {GROUPS.map(({ key, Icon }) => (
                                             <div key={key}>
                                                 <h4 className="mb-2 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-brand-300">
-                                                    <Icon size={13} aria-hidden="true" /> {label}
+                                                    <Icon size={13} aria-hidden="true" /> {t(`platforms.${key}`)}
                                                 </h4>
                                                 <ul className="flex flex-wrap gap-2">
                                                     {platform[key].map((item) => (
@@ -106,7 +109,7 @@ const PlatformExplorer = () => {
 
                                     <div className="mt-auto pt-8">
                                         <Button href={`/?service=cloud&platform=${platform.id}#contact`} variant="secondary" size="sm">
-                                            Talk to our {platform.name} team <ArrowRight size={16} />
+                                            {t('platforms.talk', { name: platform.name })} <ArrowRight size={16} />
                                         </Button>
                                     </div>
                                 </motion.div>

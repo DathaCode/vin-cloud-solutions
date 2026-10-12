@@ -1,12 +1,14 @@
 import React from 'react';
 import BlogCard from './BlogCard';
 import Reveal from '../common/Reveal';
+import { useI18n } from '../../i18n/I18nProvider';
 
 const BlogList = ({ posts }) => {
+    const { t } = useI18n();
     if (!posts || posts.length === 0) {
         return (
             <div className="rounded-2xl border border-dashed border-white/10 py-16 text-center">
-                <p className="text-slate-400">No articles found.</p>
+                <p className="text-slate-400">{t('blog.none')}</p>
             </div>
         );
     }

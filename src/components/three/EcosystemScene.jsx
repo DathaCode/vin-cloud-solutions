@@ -154,7 +154,7 @@ const Orbit = ({ platforms, activeId, onSelect }) => {
     );
 };
 
-const EcosystemScene = ({ active = true, platforms, activeId, onSelect }) => {
+const EcosystemScene = ({ active = true, platforms, activeId, onSelect, ariaLabel }) => {
     const interactive = !isCoarsePointer();
 
     return (
@@ -163,7 +163,7 @@ const EcosystemScene = ({ active = true, platforms, activeId, onSelect }) => {
             dpr={[1, 1.75]}
             camera={{ position: [0, 3.6, 8.4], fov: 42 }}
             gl={{ antialias: true, alpha: true }}
-            aria-label="Interactive 3D explorer of the cloud and SaaS platforms VIN Cloud works with"
+            aria-label={ariaLabel}
             role="img"
         >
             <ambientLight intensity={0.6} />

@@ -1,11 +1,11 @@
 import React, { useId, useState } from 'react';
 import { Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FAQ_ITEMS } from '../../utils/constants';
 import Container from '../common/Container';
 import Section from '../common/Section';
 import SectionHeading from '../common/SectionHeading';
 import Reveal from '../common/Reveal';
+import { useI18n } from '../../i18n/I18nProvider';
 
 const FAQItem = ({ item, defaultOpen = false }) => {
     const [isOpen, setIsOpen] = useState(defaultOpen);
@@ -55,13 +55,10 @@ const toJsonLd = (items) => ({
     })),
 });
 
-const FAQ = ({
-    items = FAQ_ITEMS,
-    id = 'faq',
-    title = 'Questions,',
-    highlight = 'answered.',
-    description = 'Can’t find what you need? Ask us directly. We reply within one business day.',
-}) => (
+const FAQ = ({ items: itemsProp, id = 'faq', title, highlight, description }) => {
+    const { t, c } = useI18n();
+    const items = itemsProp || c.FAQ_ITEMS;
+    return (
     <Section id={id} labelledBy={`${id}-title`}>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(toJsonLd(items)) }} />
         <Container>
@@ -70,10 +67,10 @@ const FAQ = ({
                     <SectionHeading
                         id={`${id}-title`}
                         align="left"
-                        eyebrow="FAQ"
-                        title={title}
-                        highlight={highlight}
-                        description={description}
+                        eyebrow={t('faq.eyebrow')}
+                        title={title ?? t('faq.title')}
+                        highlight={highlight ?? t('faq.highlight')}
+                        description={description ?? t('faq.description')}
                     />
                 </div>
                 <Reveal className="flex flex-col gap-3 lg:col-span-8">
@@ -84,6 +81,7 @@ const FAQ = ({
             </div>
         </Container>
     </Section>
-);
+    );
+};
 
 export default FAQ;

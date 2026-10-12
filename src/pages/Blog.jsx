@@ -6,22 +6,26 @@ import BlogList from '../components/blog/BlogList';
 import BlogSearch from '../components/blog/BlogSearch';
 import { useBlogData } from '../hooks/useBlogData';
 import { useSeo } from '../utils/seo';
+import { useI18n } from '../i18n/I18nProvider';
+
+const ALL = '__all';
 
 const Blog = () => {
     const { posts, searchPosts } = useBlogData();
     const [searchQuery, setSearchQuery] = useState('');
-    const [category, setCategory] = useState('All');
+    const { t } = useI18n();
+    const [category, setCategory] = useState(ALL);
 
     useSeo({
-        title: 'Insights: Cloud, AI & Modernization Articles',
-        description: 'Expert articles on cloud migration, Atlassian, AWS, Oracle, Microsoft 365, AI and digital transformation from VIN Cloud Solutions.',
+        title: t('seo.blog.title'),
+        description: t('seo.blog.description'),
         path: '/blog',
     });
 
-    const categories = useMemo(() => ['All', ...new Set(posts.map((p) => p.category).filter(Boolean))], [posts]);
+    const categories = useMemo(() => [ALL, ...new Set(posts.map((p) => p.category).filter(Boolean))], [posts]);
     const filteredPosts = useMemo(() => {
         const base = searchQuery.trim() ? searchPosts(searchQuery) : posts;
-        return category === 'All' ? base : base.filter((p) => p.category === category);
+        return category === ALL ? base : base.filter((p) => p.category === category);
     }, [posts, searchPosts, searchQuery, category]);
 
     return (
@@ -33,12 +37,12 @@ const Blog = () => {
                 </div>
                 <Container>
                     <div className="mx-auto max-w-2xl text-center">
-                        <span className="eyebrow">Insights</span>
+                        <span className="eyebrow">{t('blog.eyebrow')}</span>
                         <h1 className="mt-5 text-4xl font-semibold md:text-6xl">
-                            Ideas for building <span className="text-gradient">what’s next.</span>
+                            {t('blog.title')} <span className="text-gradient">{t('blog.highlight')}</span>
                         </h1>
                         <p className="mt-5 text-lg text-slate-400">
-                            Practical guides on cloud, AI, collaboration and modernization from our engineers.
+                            {t('blog.description')}
                         </p>
                         <div className="mt-9">
                             <BlogSearch value={searchQuery} onChange={setSearchQuery} />
@@ -52,9 +56,7 @@ const Blog = () => {
                                     className={`rounded-full border px-3.5 py-1.5 text-sm transition-colors ${
                                         category === c ? 'border-brand-300/50 bg-brand-400/15 text-white' : 'border-white/10 text-slate-400 hover:text-white'
                                     }`}
-                                >
-                                    {c}
-                                </button>
+                                >{c === ALL ? t('blog.all') : c}</button>
                             ))}
                         </div>
                     </div>
@@ -65,7 +67,7 @@ const Blog = () => {
                 <Container>
                     {searchQuery && (
                         <p className="mb-6 text-sm text-slate-400" aria-live="polite">
-                            {filteredPosts.length} result{filteredPosts.length !== 1 ? 's' : ''} for “{searchQuery}”
+                            {t(filteredPosts.length === 1 ? 'blog.resultOne' : 'blog.resultMany', { n: filteredPosts.length, q: searchQuery })}
                         </p>
                     )}
                     <BlogList posts={filteredPosts} />

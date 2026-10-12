@@ -6,10 +6,8 @@ import { validateEmail, validatePhone, validateRequired } from '../../utils/vali
 import { COMPANY_INFO, WHATSAPP_URL } from '../../utils/constants';
 import Icon from '../common/Icon';
 import BrandIcon from '../common/BrandIcon';
-import {
-    FORMSPREE_ENDPOINT, STEPS, SERVICE_OPTIONS, PLATFORM_OPTIONS, STAGE_OPTIONS, TIMELINE_OPTIONS,
-    CONTACT_METHODS, EMPTY_REQUEST, labelFor,
-} from './requestOptions';
+import { FORMSPREE_ENDPOINT, STEP_COUNT, EN_OPTIONS, EMPTY_REQUEST, labelFor, useRequestOptions } from './requestOptions';
+import { useI18n } from '../../i18n/I18nProvider';
 
 const DRAFT_KEY = 'vin-request-draft';
 const MESSAGE_MIN = 20;
@@ -40,25 +38,28 @@ const makeReference = () => {
 
 const validateStep = (step, data) => {
     const e = {};
-    if (step === 0 && data.services.length === 0) e.services = 'Pick at least one service so we can route your request.';
+    // Values are ui keys under form.errors; they're translated where rendered.
+    if (step === 0 && data.services.length === 0) e.services = 'services';
     if (step === 1) {
-        if (!data.stage) e.stage = 'Let us know where you are with this project.';
-        if (data.message.trim().length < MESSAGE_MIN) e.message = `A few more details please (at least ${MESSAGE_MIN} characters).`;
+        if (!data.stage) e.stage = 'stage';
+        if (data.message.trim().length < MESSAGE_MIN) e.message = 'message';
     }
     if (step === 2) {
-        if (!validateRequired(data.name)) e.name = 'Your name is required.';
-        if (!validateEmail(data.email)) e.email = 'Enter a valid email address.';
-        if (data.contactMethod !== 'email' && !validatePhone(data.phone)) e.phone = 'Enter a phone / WhatsApp number with country code.';
-        else if (data.phone.trim() && !validatePhone(data.phone)) e.phone = 'This number looks incomplete.';
-        if (!data.consent) e.consent = 'Please agree so we can contact you.';
+        if (!validateRequired(data.name)) e.name = 'name';
+        if (!validateEmail(data.email)) e.email = 'email';
+        if (data.contactMethod !== 'email' && !validatePhone(data.phone)) e.phone = 'phoneRequired';
+        else if (data.phone.trim() && !validatePhone(data.phone)) e.phone = 'phoneInvalid';
+        if (!data.consent) e.consent = 'consent';
     }
     return e;
 };
 
 /* ---------- small building blocks ---------- */
 
-const ErrorText = ({ id, children }) =>
-    children ? <p id={id} role="alert" className="mt-2 text-sm text-rose-400">{children}</p> : null;
+const ErrorText = ({ id, children }) => {
+    const { t } = useI18n();
+    return children ? <p id={id} role="alert" className="mt-2 text-sm text-rose-400">{t(`form.errors.${children}`, { min: MESSAGE_MIN })}</p> : null;
+};
 
 const Chip = ({ selected, onClick, children, multi = true, dot }) => (
     <button
@@ -78,17 +79,20 @@ const Chip = ({ selected, onClick, children, multi = true, dot }) => (
     </button>
 );
 
-const Field = ({ id, label, required, optional, error, children, hint }) => (
+const Field = ({ id, label, required, optional, error, children, hint }) => {
+    const { t } = useI18n();
+    return (
     <div>
         <label htmlFor={id} className="mb-2 flex items-baseline justify-between text-sm font-medium text-slate-300">
             <span>{label} {required && <span className="text-glow">*</span>}</span>
-            {optional && <span className="text-xs font-normal text-slate-500">Optional</span>}
+            {optional && <span className="text-xs font-normal text-slate-500">{t('form.optional')}</span>}
         </label>
         {children}
         {hint && !error && <p className="mt-1.5 text-xs text-slate-500">{hint}</p>}
         <ErrorText id={`${id}-error`}>{error}</ErrorText>
     </div>
-);
+    );
+};
 
 const StepHeading = ({ title, text }) => (
     <div className="mb-6">
@@ -99,11 +103,14 @@ const StepHeading = ({ title, text }) => (
 
 /* ---------- steps ---------- */
 
-const NeedsStep = ({ data, toggle, errors }) => (
+const NeedsStep = ({ data, toggle, errors }) => {
+    const { t } = useI18n();
+    const opts = useRequestOptions();
+    return (
     <>
-        <StepHeading title="What can we help you with?" text="Choose everything that applies. You can refine it later." />
-        <div role="group" aria-label="Services" aria-describedby="services-error" className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-            {SERVICE_OPTIONS.map((o) => {
+        <StepHeading title={t('form.needs.title')} text={t('form.needs.text')} />
+        <div role="group" aria-label={t('form.labels.services')} aria-describedby="services-error" className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+            {opts.services.map((o) => {
                 const selected = data.services.includes(o.id);
                 return (
                     <button
@@ -134,9 +141,9 @@ const NeedsStep = ({ data, toggle, errors }) => (
         <ErrorText id="services-error">{errors.services}</ErrorText>
 
         <div className="mt-8">
-            <p className="mb-3 text-sm font-medium text-slate-300">Platforms involved <span className="text-xs font-normal text-slate-500">· optional</span></p>
-            <div role="group" aria-label="Platforms" className="flex flex-wrap gap-2">
-                {PLATFORM_OPTIONS.map((p) => (
+            <p className="mb-3 text-sm font-medium text-slate-300">{t('form.needs.platforms')} <span className="text-xs font-normal text-slate-500">· {t('form.optionalLower')}</span></p>
+            <div role="group" aria-label={t('form.labels.platforms')} className="flex flex-wrap gap-2">
+                {opts.platforms.map((p) => (
                     <Chip key={p.id} dot={p.color} selected={data.platforms.includes(p.id)} onClick={() => toggle('platforms', p.id)}>
                         {p.label}
                     </Chip>
@@ -144,15 +151,18 @@ const NeedsStep = ({ data, toggle, errors }) => (
             </div>
         </div>
     </>
-);
+    );
+};
 
 const ProjectStep = ({ data, set, errors }) => {
+    const { t } = useI18n();
+    const opts = useRequestOptions();
     const length = data.message.trim().length;
     return (
         <>
-            <StepHeading title="Tell us about the project" text="The more context you share, the more useful our first conversation will be." />
-            <div role="radiogroup" aria-label="Project stage" aria-describedby="stage-error" className="grid gap-2.5 sm:grid-cols-2">
-                {STAGE_OPTIONS.map((o) => {
+            <StepHeading title={t('form.project.title')} text={t('form.project.text')} />
+            <div role="radiogroup" aria-label={t('form.labels.stage')} aria-describedby="stage-error" className="grid gap-2.5 sm:grid-cols-2">
+                {opts.stages.map((o) => {
                     const selected = data.stage === o.id;
                     return (
                         <button
@@ -180,31 +190,31 @@ const ProjectStep = ({ data, set, errors }) => {
 
             <div className="mt-7">
                 <div>
-                    <p className="mb-3 text-sm font-medium text-slate-300">Timeline <span className="text-xs font-normal text-slate-500">· optional</span></p>
-                    <div role="radiogroup" aria-label="Timeline" className="flex flex-wrap gap-2">
-                        {TIMELINE_OPTIONS.map((t) => (
-                            <Chip key={t} multi={false} selected={data.timeline === t} onClick={() => set('timeline', data.timeline === t ? '' : t)}>{t}</Chip>
+                    <p className="mb-3 text-sm font-medium text-slate-300">{t('form.labels.timeline')} <span className="text-xs font-normal text-slate-500">· {t('form.optionalLower')}</span></p>
+                    <div role="radiogroup" aria-label={t('form.labels.timeline')} className="flex flex-wrap gap-2">
+                        {opts.timelines.map((o) => (
+                            <Chip key={o.id} multi={false} selected={data.timeline === o.id} onClick={() => set('timeline', data.timeline === o.id ? '' : o.id)}>{o.label}</Chip>
                         ))}
                     </div>
                 </div>
             </div>
 
             <div className="mt-7">
-                <Field id="message" label="Project details" required error={errors.message}>
+                <Field id="message" label={t('form.labels.details')} required error={errors.message}>
                     <textarea
                         id="message"
                         rows={5}
                         maxLength={MESSAGE_MAX}
                         value={data.message}
                         onChange={(e) => set('message', e.target.value)}
-                        placeholder="What are you trying to achieve? Which systems or tools are involved? Who will use it?"
+                        placeholder={t('form.project.placeholder')}
                         aria-invalid={!!errors.message}
                         aria-describedby="message-error message-count"
                         className={`input-field resize-y ${errors.message ? 'border-rose-500/60' : ''}`}
                     />
                 </Field>
                 <p id="message-count" className={`mt-1.5 text-right font-mono text-[11px] ${length < MESSAGE_MIN ? 'text-slate-500' : 'text-emerald-400'}`}>
-                    {length < MESSAGE_MIN ? `${MESSAGE_MIN - length} more characters` : '✓ Great'} · {data.message.length}/{MESSAGE_MAX}
+                    {length < MESSAGE_MIN ? t('form.project.more', { n: MESSAGE_MIN - length }) : t('form.project.great')} · {data.message.length}/{MESSAGE_MAX}
                 </p>
             </div>
         </>
@@ -212,6 +222,8 @@ const ProjectStep = ({ data, set, errors }) => {
 };
 
 const ContactStep = ({ data, set, errors }) => {
+    const { t } = useI18n();
+    const opts = useRequestOptions();
     const phoneRequired = data.contactMethod !== 'email';
     const input = (name, extra = {}) => ({
         id: name,
@@ -225,26 +237,26 @@ const ContactStep = ({ data, set, errors }) => {
 
     return (
         <>
-            <StepHeading title="How can we reach you?" text="A senior consultant will reply within 24 hours." />
+            <StepHeading title={t('form.contact.title')} text={t('form.contact.text')} />
             <div className="grid gap-5 md:grid-cols-2">
-                <Field id="name" label="Full name" required error={errors.name}>
-                    <input type="text" autoComplete="name" placeholder="Your name" {...input('name')} />
+                <Field id="name" label={t('form.labels.name')} required error={errors.name}>
+                    <input type="text" autoComplete="name" placeholder={t('form.contact.namePlaceholder')} {...input('name')} />
                 </Field>
-                <Field id="email" label="Business email" required error={errors.email}>
-                    <input type="email" autoComplete="email" inputMode="email" placeholder="you@company.com" {...input('email')} />
+                <Field id="email" label={t('form.labels.email')} required error={errors.email}>
+                    <input type="email" autoComplete="email" inputMode="email" placeholder={t('form.contact.emailPlaceholder')} {...input('email')} />
                 </Field>
-                <Field id="company" label="Company" optional>
-                    <input type="text" autoComplete="organization" placeholder="Your company" {...input('company')} />
+                <Field id="company" label={t('form.labels.company')} optional>
+                    <input type="text" autoComplete="organization" placeholder={t('form.contact.companyPlaceholder')} {...input('company')} />
                 </Field>
-                <Field id="phone" label="Phone / WhatsApp" required={phoneRequired} optional={!phoneRequired} error={errors.phone} hint="Include the country code, e.g. +94">
+                <Field id="phone" label={t('form.labels.phone')} required={phoneRequired} optional={!phoneRequired} error={errors.phone} hint={t('form.contact.phoneHint')}>
                     <input type="tel" autoComplete="tel" inputMode="tel" placeholder="+94 7X XXX XXXX" {...input('phone')} />
                 </Field>
             </div>
 
             <div className="mt-6">
-                <p className="mb-3 text-sm font-medium text-slate-300">Preferred way to reach you</p>
-                <div role="radiogroup" aria-label="Preferred contact method" className="flex flex-wrap gap-2">
-                    {CONTACT_METHODS.map((m) => (
+                <p className="mb-3 text-sm font-medium text-slate-300">{t('form.contact.preferred')}</p>
+                <div role="radiogroup" aria-label={t('form.contact.preferred')} className="flex flex-wrap gap-2">
+                    {opts.methods.map((m) => (
                         <Chip key={m.id} multi={false} selected={data.contactMethod === m.id} onClick={() => set('contactMethod', m.id)}>
                             {m.id === 'whatsapp' && <BrandIcon name="whatsapp" size={14} className="text-emerald-400" />}
                             {m.label}
@@ -262,7 +274,7 @@ const ContactStep = ({ data, set, errors }) => {
                         aria-describedby="consent-error"
                         className="mt-0.5 h-4 w-4 shrink-0 rounded border-white/20 bg-ink-950 accent-cyan-300"
                     />
-                    I agree that VIN Cloud Solutions may contact me about this request. We never share your details.
+                    {t('form.contact.consent')}
                 </label>
                 <ErrorText id="consent-error">{errors.consent}</ErrorText>
             </div>
@@ -270,49 +282,54 @@ const ContactStep = ({ data, set, errors }) => {
     );
 };
 
-const ReviewRow = ({ label, value, onEdit }) => (
+const ReviewRow = ({ label, value, onEdit }) => {
+    const { t } = useI18n();
+    return (
     <div className="flex items-start justify-between gap-4 border-b border-white/5 py-3.5 last:border-0">
         <dt className="w-32 shrink-0 font-mono text-[11px] uppercase tracking-[0.15em] text-slate-500">{label}</dt>
-        <dd className="flex-1 whitespace-pre-line break-words text-sm text-slate-200">{value || <span className="text-slate-500">Not provided</span>}</dd>
-        <button type="button" onClick={onEdit} className="shrink-0 rounded-lg p-1.5 text-slate-500 hover:bg-white/5 hover:text-brand-200" aria-label={`Edit ${label}`}>
+        <dd className="flex-1 whitespace-pre-line break-words text-sm text-slate-200">{value || <span className="text-slate-500">{t('form.review.notProvided')}</span>}</dd>
+        <button type="button" onClick={onEdit} className="shrink-0 rounded-lg p-1.5 text-slate-500 hover:bg-white/5 hover:text-brand-200" aria-label={t('form.review.edit', { label })}>
             <Pencil size={14} />
         </button>
     </div>
-);
+    );
+};
 
-const ReviewStep = ({ data, goTo }) => (
+const ReviewStep = ({ data, goTo }) => {
+    const { t } = useI18n();
+    const opts = useRequestOptions();
+    return (
     <>
-        <StepHeading title="Review your request" text="Check everything looks right, then send it over." />
+        <StepHeading title={t('form.review.title')} text={t('form.review.text')} />
         <dl className="rounded-2xl border border-white/10 bg-ink-950/40 px-4">
-            <ReviewRow label="Services" value={data.services.map((s) => labelFor(SERVICE_OPTIONS, s)).join(', ')} onEdit={() => goTo(0)} />
-            <ReviewRow label="Platforms" value={data.platforms.map((p) => labelFor(PLATFORM_OPTIONS, p)).join(', ')} onEdit={() => goTo(0)} />
-            <ReviewRow label="Stage" value={labelFor(STAGE_OPTIONS, data.stage)} onEdit={() => goTo(1)} />
-            <ReviewRow label="Timeline" value={data.timeline} onEdit={() => goTo(1)} />
-            <ReviewRow label="Details" value={data.message} onEdit={() => goTo(1)} />
+            <ReviewRow label={t('form.labels.services')} value={data.services.map((s) => labelFor(opts.services, s)).join(', ')} onEdit={() => goTo(0)} />
+            <ReviewRow label={t('form.labels.platforms')} value={data.platforms.map((p) => labelFor(opts.platforms, p)).join(', ')} onEdit={() => goTo(0)} />
+            <ReviewRow label={t('form.labels.stage')} value={data.stage && labelFor(opts.stages, data.stage)} onEdit={() => goTo(1)} />
+            <ReviewRow label={t('form.labels.timeline')} value={data.timeline && labelFor(opts.timelines, data.timeline)} onEdit={() => goTo(1)} />
+            <ReviewRow label={t('form.labels.details')} value={data.message} onEdit={() => goTo(1)} />
             <ReviewRow
-                label="Contact"
+                label={t('form.labels.contact')}
                 value={[data.name, data.company, data.email, data.phone].filter(Boolean).join('\n')}
                 onEdit={() => goTo(2)}
             />
-            <ReviewRow label="Reach via" value={labelFor(CONTACT_METHODS, data.contactMethod)} onEdit={() => goTo(2)} />
+            <ReviewRow label={t('form.labels.reachVia')} value={labelFor(opts.methods, data.contactMethod)} onEdit={() => goTo(2)} />
         </dl>
     </>
-);
+    );
+};
 
-const SuccessView = ({ reference, name, onReset }) => (
+const SuccessView = ({ reference, name, onReset }) => {
+    const { t } = useI18n();
+    return (
     <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} className="py-4 text-center" role="status">
         <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-emerald-400/15 text-emerald-300 shadow-[0_0_40px_rgba(52,211,153,0.35)]">
             <CheckCircle2 size={32} />
         </div>
-        <h3 className="mt-6 text-2xl font-semibold">Thank you{name ? `, ${name.split(' ')[0]}` : ''}!</h3>
-        <p className="mt-2 text-slate-400">Your request is in. Reference <span className="font-mono text-brand-200">{reference}</span></p>
+        <h3 className="mt-6 text-2xl font-semibold">{name ? t('form.success.thanksName', { name: name.split(' ')[0] }) : t('form.success.thanks')}</h3>
+        <p className="mt-2 text-slate-400">{t('form.success.received')} <span className="font-mono text-brand-200">{reference}</span></p>
 
         <ol className="mx-auto mt-8 max-w-md space-y-4 text-left">
-            {[
-                ['Within 24 hours', 'A senior consultant reviews your request and contacts you.'],
-                ['Discovery call', 'A free 30-minute session to understand goals and constraints.'],
-                ['Proposal', 'After the requirement analysis: a clear scope, timeline and quotation, with no obligation.'],
-            ].map(([title, text], i) => (
+            {t('form.success.steps').map(([title, text], i) => (
                 <li key={title} className="flex gap-4">
                     <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-brand-300/30 bg-brand-500/10 font-mono text-xs text-brand-200">{i + 1}</span>
                     <span><span className="block text-sm font-semibold text-slate-100">{title}</span><span className="text-sm text-slate-400">{text}</span></span>
@@ -322,23 +339,26 @@ const SuccessView = ({ reference, name, onReset }) => (
 
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <a
-                href={`${WHATSAPP_URL}?text=${encodeURIComponent(`Hi VIN Cloud, I just sent a project request (${reference}).`)}`}
+                href={`${WHATSAPP_URL}?text=${encodeURIComponent(t('form.success.waMessage', { reference }))}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500/90 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-500"
             >
-                <BrandIcon name="whatsapp" size={16} /> Follow up on WhatsApp
+                <BrandIcon name="whatsapp" size={16} /> {t('form.success.followUp')}
             </a>
             <button type="button" onClick={onReset} className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 px-5 py-3 text-sm font-semibold text-slate-200 hover:bg-white/5">
-                <RotateCcw size={16} /> Send another request
+                <RotateCcw size={16} /> {t('form.success.another')}
             </button>
         </div>
     </motion.div>
-);
+    );
+};
 
 /* ---------- main form ---------- */
 
 const RequestForm = () => {
+    const { t, lang } = useI18n();
+    const opts = useRequestOptions();
     const { search } = useLocation();
     const [data, setData] = useState(() => loadDraft() || EMPTY_REQUEST);
     const [restored, setRestored] = useState(() => !!loadDraft() && isDirty(loadDraft()));
@@ -358,8 +378,8 @@ const RequestForm = () => {
         if (!service && !platform) return;
         setData((d) => ({
             ...d,
-            services: service && SERVICE_OPTIONS.some((o) => o.id === service) && !d.services.includes(service) ? [...d.services, service] : d.services,
-            platforms: platform && PLATFORM_OPTIONS.some((o) => o.id === platform) && !d.platforms.includes(platform) ? [...d.platforms, platform] : d.platforms,
+            services: service && EN_OPTIONS.services.some((o) => o.id === service) && !d.services.includes(service) ? [...d.services, service] : d.services,
+            platforms: platform && EN_OPTIONS.platforms.some((o) => o.id === platform) && !d.platforms.includes(platform) ? [...d.platforms, platform] : d.platforms,
         }));
         setStatus('idle');
         setStep(0);
@@ -410,7 +430,8 @@ const RequestForm = () => {
         if (gotcha) return; // bot
         setStatus('sending');
         const ref = makeReference();
-        const services = data.services.map((s) => labelFor(SERVICE_OPTIONS, s)).join(', ');
+        // The team reads requests in English whatever language the visitor used.
+        const services = data.services.map((s) => labelFor(EN_OPTIONS.services, s)).join(', ');
         try {
             const res = await fetch(FORMSPREE_ENDPOINT, {
                 method: 'POST',
@@ -422,11 +443,12 @@ const RequestForm = () => {
                     email: data.email,
                     company: data.company,
                     phone: data.phone,
-                    preferred_contact: labelFor(CONTACT_METHODS, data.contactMethod),
+                    preferred_contact: labelFor(EN_OPTIONS.methods, data.contactMethod),
                     services,
-                    platforms: data.platforms.map((p) => labelFor(PLATFORM_OPTIONS, p)).join(', '),
-                    stage: labelFor(STAGE_OPTIONS, data.stage),
-                    timeline: data.timeline,
+                    platforms: data.platforms.map((p) => labelFor(EN_OPTIONS.platforms, p)).join(', '),
+                    stage: data.stage ? labelFor(EN_OPTIONS.stages, data.stage) : '',
+                    timeline: data.timeline ? labelFor(EN_OPTIONS.timelines, data.timeline) : '',
+                    visitor_language: lang,
                     message: data.message,
                     page: window.location.href,
                 }),
@@ -442,7 +464,7 @@ const RequestForm = () => {
 
     const onSubmit = (e) => {
         e.preventDefault();
-        if (step < STEPS.length - 1) next();
+        if (step < STEP_COUNT - 1) next();
         else submit();
     };
 
@@ -456,7 +478,7 @@ const RequestForm = () => {
         setStatus('idle');
     };
 
-    const progress = ((step + 1) / STEPS.length) * 100;
+    const progress = ((step + 1) / STEP_COUNT) * 100;
 
     return (
         <div ref={cardRef} className="scroll-mt-28 rounded-3xl border border-white/10 bg-ink-850/80 shadow-glow backdrop-blur-xl">
@@ -465,11 +487,11 @@ const RequestForm = () => {
                     <SuccessView reference={reference} name={data.name} onReset={reset} />
                 </div>
             ) : (
-                <form onSubmit={onSubmit} noValidate aria-label="Project request">
+                <form onSubmit={onSubmit} noValidate aria-label={t('form.aria')}>
                     {/* Progress */}
                     <div className="border-b border-white/10 px-6 pt-6 md:px-9">
                         <ol className="flex items-center justify-between gap-2">
-                            {STEPS.map((s, i) => {
+                            {opts.steps.map((s, i) => {
                                 const done = i < step;
                                 const current = i === step;
                                 const reachable = i <= maxStep;
@@ -501,8 +523,8 @@ const RequestForm = () => {
                     <div className="p-6 md:p-9">
                         {restored && step === 0 && (
                             <div className="mb-6 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-brand-300/20 bg-brand-500/10 px-4 py-2.5 text-sm text-brand-100">
-                                We restored your unfinished request.
-                                <button type="button" onClick={reset} className="font-semibold text-brand-200 underline-offset-4 hover:underline">Start over</button>
+                                {t('form.restored')}
+                                <button type="button" onClick={reset} className="font-semibold text-brand-200 underline-offset-4 hover:underline">{t('form.startOver')}</button>
                             </div>
                         )}
 
@@ -528,19 +550,19 @@ const RequestForm = () => {
 
                         {status === 'error' && (
                             <div role="alert" className="mt-6 rounded-xl border border-rose-400/30 bg-rose-400/10 px-4 py-3 text-sm text-rose-200">
-                                We couldn’t send your request, but your answers are saved. Please try again, or reach us on{' '}
-                                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="font-semibold underline">WhatsApp</a> or at{' '}
-                                <a href={`mailto:${COMPANY_INFO.email}`} className="font-semibold underline">{COMPANY_INFO.email}</a>.
+                                {t('form.sendError')}{' '}
+                                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="font-semibold underline">WhatsApp</a>{' '}
+                                · <a href={`mailto:${COMPANY_INFO.email}`} className="font-semibold underline">{COMPANY_INFO.email}</a>
                             </div>
                         )}
 
                         <div className="mt-8 flex items-center justify-between gap-3">
                             {step > 0 ? (
                                 <button type="button" onClick={() => goTo(step - 1)} className="inline-flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-slate-300 hover:bg-white/5 hover:text-white">
-                                    <ArrowLeft size={16} /> Back
+                                    <ArrowLeft size={16} /> {t('form.back')}
                                 </button>
                             ) : (
-                                <span className="font-mono text-[11px] text-slate-500">Takes about 2 minutes</span>
+                                <span className="font-mono text-[11px] text-slate-500">{t('form.duration')}</span>
                             )}
                             <button
                                 type="submit"
@@ -548,11 +570,11 @@ const RequestForm = () => {
                                 className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-300 via-glow to-brand-300 bg-[length:200%_auto] px-6 py-3 text-sm font-semibold text-ink-950 shadow-glow transition-all hover:bg-right disabled:cursor-not-allowed disabled:opacity-60"
                             >
                                 {status === 'sending' ? (
-                                    <><Loader2 size={16} className="animate-spin" /> Sending…</>
-                                ) : step === STEPS.length - 1 ? (
-                                    <>Send request <Send size={16} /></>
+                                    <><Loader2 size={16} className="animate-spin" /> {t('form.sending')}</>
+                                ) : step === STEP_COUNT - 1 ? (
+                                    <>{t('form.send')} <Send size={16} /></>
                                 ) : (
-                                    <>Continue <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" /></>
+                                    <>{t('form.continue')} <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" /></>
                                 )}
                             </button>
                         </div>

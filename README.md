@@ -10,6 +10,7 @@ Live: **https://cloud.vinsolutions.lk** · Hosting: AWS Amplify, built from the 
 - Services, AI, platforms, case studies ("Our work"), integrations, process, FAQ and blog
 - Multi-step **project request form** (Formspree) with WhatsApp follow-up, plus a floating WhatsApp button
 - SEO: per-page meta tags, JSON-LD (Organization, FAQ, BlogPosting), sitemap, Open Graph image, favicons/PWA icons
+- **Three languages**: English, Swedish and Italian (switcher in the menu, browser auto-detect); see `.claude/skills/i18n` / `docs/CONTENT_GUIDE.md`
 - Accessible (keyboard, reduced motion, semantic headings) and mobile-first
 
 ## Tech stack
@@ -27,6 +28,9 @@ npm run dev            # http://localhost:5173
 | `npm run dev` | Development server with hot reload |
 | `npm run build` | Production build into `dist/` |
 | `npm run preview` | Serve the production build at http://localhost:4173 |
+| `npm run i18n:check` | Verify Swedish/Italian are complete and up to date with English |
+| `npm run i18n:accept` | Mark the current English text as translated (after updating sv/it) |
+| `npm run i18n:export` | Write `docs/translations-review.csv` for translators |
 
 Environment variables: see `.env.example` (only `VITE_FORMSPREE_ENDPOINT`, which already defaults to the live form).
 

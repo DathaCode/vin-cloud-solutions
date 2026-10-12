@@ -6,6 +6,7 @@ import { formatDate } from '../../utils/formatDate';
 import Badge from '../common/Badge';
 import Button from '../common/Button';
 import BlogCover from './BlogCover';
+import { useI18n } from '../../i18n/I18nProvider';
 
 // Shift markdown headings down one level: the page title is the only <h1>.
 const markdownComponents = {
@@ -15,6 +16,7 @@ const markdownComponents = {
 };
 
 const BlogPost = ({ post }) => {
+    const { t, locale } = useI18n();
     if (!post) return null;
 
     // The markdown repeats the title as its first heading; drop it to avoid a duplicate.
@@ -23,7 +25,7 @@ const BlogPost = ({ post }) => {
     return (
         <article className="mx-auto max-w-3xl">
             <Link to="/blog" className="mb-10 inline-flex items-center gap-2 text-sm text-brand-200 hover:text-glow">
-                <ArrowLeft size={16} /> All articles
+                <ArrowLeft size={16} /> {t('blog.allArticles')}
             </Link>
 
             <header className="mb-10">
@@ -31,8 +33,8 @@ const BlogPost = ({ post }) => {
                 <h1 className="text-balance text-3xl font-semibold leading-tight md:text-5xl">{post.title}</h1>
                 <div className="mt-6 flex flex-wrap items-center gap-5 text-sm text-slate-400">
                     {post.author && <span className="flex items-center gap-2"><User size={15} aria-hidden="true" />{post.author}</span>}
-                    <span className="flex items-center gap-2"><Calendar size={15} aria-hidden="true" /><time dateTime={post.date}>{formatDate(post.date)}</time></span>
-                    {post.readingTime && <span className="flex items-center gap-2"><Clock size={15} aria-hidden="true" />{post.readingTime} read</span>}
+                    <span className="flex items-center gap-2"><Calendar size={15} aria-hidden="true" /><time dateTime={post.date}>{formatDate(post.date, locale)}</time></span>
+                    {post.readingTime && <span className="flex items-center gap-2"><Clock size={15} aria-hidden="true" />{t('blog.readTime', { time: post.readingTime })}</span>}
                 </div>
             </header>
 
@@ -44,7 +46,7 @@ const BlogPost = ({ post }) => {
 
             {post.tags?.length > 0 && (
                 <footer className="mt-14 border-t border-white/10 pt-8">
-                    <h2 className="mb-3 font-mono text-xs uppercase tracking-[0.2em] text-slate-500">Tags</h2>
+                    <h2 className="mb-3 font-mono text-xs uppercase tracking-[0.2em] text-slate-500">{t('blog.tags')}</h2>
                     <div className="flex flex-wrap gap-2">
                         {post.tags.map((tag) => <Badge key={tag}>{tag}</Badge>)}
                     </div>
@@ -53,10 +55,10 @@ const BlogPost = ({ post }) => {
 
             <aside className="mt-14 flex flex-col items-start justify-between gap-5 rounded-3xl border border-brand-300/20 bg-gradient-to-br from-brand-500/15 to-ai/10 p-7 md:flex-row md:items-center">
                 <div>
-                    <p className="font-display text-xl font-semibold text-slate-50">Planning something similar?</p>
-                    <p className="mt-1 text-sm text-slate-400">Our consultants can help you scope it in a free 30-minute session.</p>
+                    <p className="font-display text-xl font-semibold text-slate-50">{t('blog.ctaTitle')}</p>
+                    <p className="mt-1 text-sm text-slate-400">{t('blog.ctaText')}</p>
                 </div>
-                <Button href="/#contact" size="sm">Book a consultation</Button>
+                <Button href="/#contact" size="sm">{t('nav.book')}</Button>
             </aside>
         </article>
     );

@@ -110,7 +110,7 @@ const Node = ({ position, label, hub = false, occluder }) => {
     );
 };
 
-const Globe = ({ interactive }) => {
+const Globe = ({ interactive, labels }) => {
     const group = useRef();
     const reduce = prefersReducedMotion();
     const hub = useMemo(() => latLonToVec3(HUB.lat, HUB.lon, RADIUS), []);
@@ -135,10 +135,10 @@ const Globe = ({ interactive }) => {
                 <sphereGeometry args={[RADIUS, 48, 48]} />
             </mesh>
             <DotSphere />
-            <Node position={hub} label={HUB.name} hub occluder={body} />
+            <Node position={hub} label={labels?.hub || HUB.name} hub occluder={body} />
             {regions.map((r, i) => (
                 <React.Fragment key={r.name}>
-                    <Node position={r.pos} label={`${r.name} cloud region`} occluder={body} />
+                    <Node position={r.pos} label={(labels?.region || '{name} cloud region').replace('{name}', labels?.cities?.[r.name] || r.name)} occluder={body} />
                     <Arc from={hub} to={r.pos} index={i} />
                 </React.Fragment>
             ))}
@@ -155,7 +155,7 @@ const Globe = ({ interactive }) => {
     );
 };
 
-const HeroGlobe = ({ active = true }) => {
+const HeroGlobe = ({ active = true, labels }) => {
     const interactive = !isCoarsePointer();
     const reduce = prefersReducedMotion();
 
@@ -165,10 +165,10 @@ const HeroGlobe = ({ active = true }) => {
             dpr={[1, 1.75]}
             camera={{ position: [0, 0, 5.4], fov: 42 }}
             gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-            aria-label="Interactive 3D globe showing VIN Cloud's South Asia hub connected to global cloud regions"
+            aria-label={labels?.aria}
             role="img"
         >
-            <Globe interactive={interactive} />
+            <Globe interactive={interactive} labels={labels} />
             {interactive && (
                 <OrbitControls
                     enableZoom={false}

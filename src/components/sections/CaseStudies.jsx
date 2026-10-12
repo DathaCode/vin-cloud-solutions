@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Check, MapPin, Sparkles } from 'lucide-react';
-import { CASE_CATEGORIES, CASE_STUDIES } from '../../utils/constants';
 import Container from '../common/Container';
 import Section from '../common/Section';
 import SectionHeading from '../common/SectionHeading';
@@ -11,12 +10,13 @@ import Badge from '../common/Badge';
 import Button from '../common/Button';
 import Dialog from '../common/Dialog';
 import AutoScrollSlider from '../common/AutoScrollSlider';
+import { useI18n } from '../../i18n/I18nProvider';
 
-const categoryLabel = (id) => CASE_CATEGORIES.find((c) => c.id === id)?.label;
+const categoryLabel = (categories, id) => categories.find((cat) => cat.id === id)?.label;
 
 // Slider order: named client projects first, then in-house products, then the other engagements.
 const rank = (study) => (study.client ? 0 : study.featured ? 1 : 2);
-const ORDERED = [...CASE_STUDIES].sort((a, b) => rank(a) - rank(b));
+const ordered = (studies) => [...studies].sort((a, b) => rank(a) - rank(b));
 
 // Which request-form service a "Start a similar project" click should pre-select.
 const SIMILAR_SERVICE = { 'cloud-infra': 'cloud', 'data-migration': 'cloud', crm: 'crm', atlassian: 'licensing' };
@@ -40,7 +40,9 @@ const Results = ({ results, size = 'md' }) => (
 );
 
 /** One slide. The "Read case study" button stretches over the whole card, so the entire card is clickable. */
-const WorkCard = ({ study, onOpen, clone = false }) => (
+const WorkCard = ({ study, onOpen, clone = false }) => {
+    const { t, c } = useI18n();
+    return (
     <SpotlightCard
         as="article"
         className={`h-full ${
@@ -69,9 +71,9 @@ const WorkCard = ({ study, onOpen, clone = false }) => (
                 )}
             </div>
             <div className="mt-5 flex flex-wrap gap-2">
-                {study.client && <Badge variant="accent">Client project</Badge>}
-                {study.featured && <Badge variant="ai">Built by VIN Cloud</Badge>}
-                {!study.client && !study.featured && <Badge variant="accent">{categoryLabel(study.category)}</Badge>}
+                {study.client && <Badge variant="accent">{t('work.clientProject')}</Badge>}
+                {study.featured && <Badge variant="ai">{t('work.builtByVin')}</Badge>}
+                {!study.client && !study.featured && <Badge variant="accent">{categoryLabel(c.CASE_CATEGORIES, study.category)}</Badge>}
                 <Badge>{study.sector}</Badge>
             </div>
             <h3 className="mt-4 text-xl font-semibold leading-snug">{study.title}</h3>
@@ -91,14 +93,17 @@ const WorkCard = ({ study, onOpen, clone = false }) => (
                     tabIndex={clone ? -1 : undefined}
                     className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-brand-200 after:absolute after:inset-0 after:rounded-2xl after:content-[''] hover:text-glow"
                 >
-                    Read case study <span className="sr-only">: {study.title}</span><ArrowUpRight size={16} aria-hidden="true" />
+                    {t('work.read')} <span className="sr-only">: {study.title}</span><ArrowUpRight size={16} aria-hidden="true" />
                 </button>
             </div>
         </div>
     </SpotlightCard>
-);
+    );
+};
 
-const CaseDetail = ({ study }) => (
+const CaseDetail = ({ study }) => {
+    const { t, c } = useI18n();
+    return (
     <article>
         <header className="border-b border-white/10 bg-gradient-to-br from-brand-500/15 to-ai/10 p-7 pr-16 md:p-9 md:pr-16">
             {study.client && (
@@ -111,23 +116,23 @@ const CaseDetail = ({ study }) => (
                 </div>
             )}
             <div className="flex flex-wrap gap-2">
-                {study.client && <Badge variant="accent">Client project</Badge>}
-                {study.featured && <Badge variant="ai">Built by VIN Cloud</Badge>}
-                <Badge variant="accent">{categoryLabel(study.category)}</Badge>
+                {study.client && <Badge variant="accent">{t('work.clientProject')}</Badge>}
+                {study.featured && <Badge variant="ai">{t('work.builtByVin')}</Badge>}
+                <Badge variant="accent">{categoryLabel(c.CASE_CATEGORIES, study.category)}</Badge>
                 <Badge>{study.sector}</Badge>
             </div>
             <h3 id="case-dialog-title" className="mt-4 text-2xl font-semibold md:text-3xl">{study.title}</h3>
             <div className="mt-7"><Results results={study.results} size="lg" /></div>
         </header>
         <div className="space-y-7 p-7 md:p-9">
-            {[['Challenge', study.challenge], ['Solution', study.solution]].map(([label, text]) => (
+            {[[t('work.challenge'), study.challenge], [t('work.solution'), study.solution]].map(([label, text]) => (
                 <section key={label}>
                     <h4 className="font-mono text-[11px] uppercase tracking-[0.2em] text-brand-300">{label}</h4>
                     <p className="mt-2 leading-relaxed text-slate-300">{text}</p>
                 </section>
             ))}
             <section>
-                <h4 className="font-mono text-[11px] uppercase tracking-[0.2em] text-brand-300">Highlights</h4>
+                <h4 className="font-mono text-[11px] uppercase tracking-[0.2em] text-brand-300">{t('work.highlights')}</h4>
                 <ul className="mt-3 space-y-2.5">
                     {study.highlights.map((h) => (
                         <li key={h} className="flex items-start gap-2 text-slate-300">
@@ -137,51 +142,53 @@ const CaseDetail = ({ study }) => (
                 </ul>
             </section>
             <section>
-                <h4 className="font-mono text-[11px] uppercase tracking-[0.2em] text-brand-300">Technology</h4>
+                <h4 className="font-mono text-[11px] uppercase tracking-[0.2em] text-brand-300">{t('work.technology')}</h4>
                 <div className="mt-3 flex flex-wrap gap-1.5">{study.stack.map((t) => <Badge key={t}>{t}</Badge>)}</div>
             </section>
             <div className="flex flex-col items-start justify-between gap-4 rounded-2xl border border-brand-300/20 bg-brand-500/10 p-5 sm:flex-row sm:items-center">
-                <p className="text-sm text-slate-300">Want something similar for your organization?</p>
+                <p className="text-sm text-slate-300">{t('work.similarQ')}</p>
                 <Button href={`/?service=${SIMILAR_SERVICE[study.category] || 'ai'}#contact`} size="sm">
-                    Start a similar project <ArrowRight size={16} />
+                    {t('work.similarCta')} <ArrowRight size={16} />
                 </Button>
             </div>
         </div>
     </article>
-);
+    );
+};
 
 const CaseStudies = () => {
+    const { t, c } = useI18n();
     const [category, setCategory] = useState('all');
     const [openStudy, setOpenStudy] = useState(null);
     const closeStudy = useCallback(() => setOpenStudy(null), []);
 
-    const items = useMemo(
-        () => (category === 'all' ? ORDERED : ORDERED.filter((s) => s.category === category)),
-        [category]
-    );
+    const items = useMemo(() => {
+        const all = ordered(c.CASE_STUDIES);
+        return category === 'all' ? all : all.filter((s) => s.category === category);
+    }, [category, c]);
 
     return (
         <Section id="work" labelledBy="work-title" className="bg-ink-950/40">
             <Container>
                 <SectionHeading
                     id="work-title"
-                    eyebrow="Our work"
-                    title="Real solutions,"
-                    highlight="measurable outcomes."
-                    description="Client platforms we’ve delivered, AI products we’ve built in-house and cloud environments we run every day."
+                    eyebrow={t('work.eyebrow')}
+                    title={t('work.title')}
+                    highlight={t('work.highlight')}
+                    description={t('work.description')}
                 />
 
                 <Reveal className="mt-10 flex justify-center">
-                    <div role="tablist" aria-label="Filter case studies" className="flex max-w-full gap-1.5 overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.02] p-1.5">
-                        {CASE_CATEGORIES.map((c) => (
+                    <div role="tablist" aria-label={t('work.filter')} className="flex max-w-full gap-1.5 overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.02] p-1.5">
+                        {c.CASE_CATEGORIES.map((cat) => (
                             <button
-                                key={c.id}
+                                key={cat.id}
                                 role="tab"
-                                aria-selected={category === c.id}
-                                onClick={() => setCategory(c.id)}
-                                className={`shrink-0 rounded-xl px-3.5 py-2 text-sm font-medium transition-colors ${category === c.id ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-slate-100'}`}
+                                aria-selected={category === cat.id}
+                                onClick={() => setCategory(cat.id)}
+                                className={`shrink-0 rounded-xl px-3.5 py-2 text-sm font-medium transition-colors ${category === cat.id ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-slate-100'}`}
                             >
-                                {c.label}
+                                {cat.label}
                             </button>
                         ))}
                     </div>
@@ -199,7 +206,7 @@ const CaseStudies = () => {
                         <AutoScrollSlider
                             items={items}
                             getKey={(s) => s.id}
-                            label="Case studies"
+                            label={t('work.sliderLabel')}
                             paused={!!openStudy}
                             itemClassName="w-[85vw] max-w-[380px] sm:w-[380px]"
                             renderItem={(s, { clone }) => <WorkCard study={s} onOpen={setOpenStudy} clone={clone} />}

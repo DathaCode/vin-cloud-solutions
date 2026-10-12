@@ -7,8 +7,10 @@ import Section from '../common/Section';
 import SectionHeading from '../common/SectionHeading';
 import Reveal from '../common/Reveal';
 import Button from '../common/Button';
+import { useI18n } from '../../i18n/I18nProvider';
 
 const BlogTeaser = () => {
+    const { t } = useI18n();
     const { getLatestPosts, loading } = useBlogData();
     const latestPosts = getLatestPosts(3);
 
@@ -23,14 +25,14 @@ const BlogTeaser = () => {
                     <SectionHeading
                         id="insights-title"
                         align="left"
-                        eyebrow="Insights"
-                        title="Latest from"
-                        highlight="our engineers."
-                        description="Practical guides on cloud, collaboration and modernization."
+                        eyebrow={t('insights.eyebrow')}
+                        title={t('insights.title')}
+                        highlight={t('insights.highlight')}
+                        description={t('insights.description')}
                     />
                     <Reveal>
                         <Button href="/blog" variant="secondary">
-                            All articles <ArrowRight size={16} />
+                            {t('insights.all')} <ArrowRight size={16} />
                         </Button>
                     </Reveal>
                 </div>

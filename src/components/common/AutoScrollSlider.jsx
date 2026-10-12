@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Hand, Pause, Play } from 'lucide-react';
 import { useReducedMotion } from 'framer-motion';
+import { useI18n } from '../../i18n/I18nProvider';
 
 const RESUME_AFTER_MS = 2500;
 const DRAG_THRESHOLD = 6;
@@ -13,6 +14,7 @@ const DRAG_THRESHOLD = 6;
  * `renderItem(item, { clone })`: loop clones must set tabIndex={-1} on their focusable elements.
  */
 const AutoScrollSlider = ({ items, getKey, renderItem, label, speed = 32, paused = false, itemClassName = '' }) => {
+    const { t } = useI18n();
     const reduceMotion = useReducedMotion();
     const track = useRef(null);
     const pos = useRef(0);               // float scroll position (scrollLeft rounds on some displays)
@@ -207,7 +209,7 @@ const AutoScrollSlider = ({ items, getKey, renderItem, label, speed = 32, paused
                 onPointerCancel={endDrag}
                 onClickCapture={onClickCapture}
                 onWheel={(e) => { if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) markInteraction(); }}
-                aria-label={`${label}. Use the left and right arrow keys to browse.`}
+                aria-label={t('slider.trackLabel', { label })}
                 className={`mask-fade-x -mx-4 flex gap-6 overflow-x-auto px-4 pb-4 pt-1 [scrollbar-width:none] focus-visible:ring-offset-0 [&::-webkit-scrollbar]:hidden ${
                     canLoop ? (dragging ? 'cursor-grabbing select-none' : 'cursor-grab') : ''
                 }`}
@@ -220,7 +222,7 @@ const AutoScrollSlider = ({ items, getKey, renderItem, label, speed = 32, paused
                             data-slide={clone ? undefined : ''}
                             role={clone ? undefined : 'group'}
                             aria-roledescription={clone ? undefined : 'slide'}
-                            aria-label={clone ? undefined : `${i + 1} of ${n}`}
+                            aria-label={clone ? undefined : t('slider.slideOf', { i: i + 1, n })}
                             // Clones stay clickable for mouse/touch users but are hidden from screen readers;
                             // renderItem receives { clone } so it can drop them from the tab order.
                             aria-hidden={clone || undefined}
@@ -242,7 +244,7 @@ const AutoScrollSlider = ({ items, getKey, renderItem, label, speed = 32, paused
                             <span ref={progressBar} className="block h-full origin-left rounded-full bg-gradient-to-r from-brand-300 to-glow" style={{ transform: `scaleX(${1 / n})` }} />
                         </span>
                         <span className="hidden items-center gap-1.5 font-mono text-[11px] text-slate-500 md:flex">
-                            <Hand size={12} aria-hidden="true" /> drag, swipe or hover to pause
+                            <Hand size={12} aria-hidden="true" /> {t('slider.hint')}
                         </span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -250,12 +252,12 @@ const AutoScrollSlider = ({ items, getKey, renderItem, label, speed = 32, paused
                             type="button"
                             onClick={() => setUserPaused((p) => !p)}
                             aria-pressed={!autoplayOn}
-                            aria-label={autoplayOn ? 'Pause automatic sliding' : 'Play automatic sliding'}
+                            aria-label={autoplayOn ? t('slider.pause') : t('slider.play')}
                             className="grid h-11 w-11 place-items-center rounded-full border border-white/15 text-slate-200 transition-colors hover:border-brand-300/50 hover:text-glow"
                         >
                             {autoplayOn ? <Pause size={16} /> : <Play size={16} />}
                         </button>
-                        {[[-1, ArrowLeft, 'Previous case study'], [1, ArrowRight, 'Next case study']].map(([dir, Arrow, text]) => (
+                        {[[-1, ArrowLeft, t('slider.previous')], [1, ArrowRight, t('slider.next')]].map(([dir, Arrow, text]) => (
                             <button
                                 key={text}
                                 type="button"

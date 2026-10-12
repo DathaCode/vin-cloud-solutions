@@ -14,9 +14,11 @@ import FAQ from '../components/sections/FAQ';
 import Contact from '../components/sections/Contact';
 import CrmTeaser from '../components/sections/CrmTeaser';
 import { useSeo } from '../utils/seo';
+import { useI18n } from '../i18n/I18nProvider';
 
 const Home = () => {
-    useSeo({ path: '/' });
+    const { t } = useI18n();
+    useSeo({ title: t('seo.home.title'), description: t('seo.home.description'), path: '/' });
 
     return (
         <PageLayout>

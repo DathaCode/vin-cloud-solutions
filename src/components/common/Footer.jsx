@@ -1,8 +1,9 @@
 import React from 'react';
 import { Mail, Phone, MapPin, ArrowUpRight } from 'lucide-react';
-import { COMPANY_INFO, SOCIAL_LINKS, NAV_LINKS, SERVICES, PLATFORMS, WHATSAPP_URL } from '../../utils/constants';
+import { SOCIAL_LINKS, NAV_LINKS, WHATSAPP_URL } from '../../utils/constants';
 import Container from './Container';
 import BrandIcon from './BrandIcon';
+import { useI18n } from '../../i18n/I18nProvider';
 
 // Profiles with an empty URL in constants.js stay hidden until they're filled in.
 const socials = [
@@ -29,6 +30,8 @@ const FooterLink = ({ href, children }) => (
 );
 
 const Footer = () => {
+    const { t, c } = useI18n();
+    const COMPANY_INFO = c.COMPANY_INFO;
     const currentYear = new Date().getFullYear();
 
     return (
@@ -38,16 +41,16 @@ const Footer = () => {
             <Container className="relative">
                 <div className="grid grid-cols-2 gap-10 py-16 md:grid-cols-12">
                     <div className="col-span-2 md:col-span-4">
-                        <a href="/" aria-label="VIN Cloud Solutions home" className="inline-flex items-center gap-4">
+                        <a href="/" aria-label={t('nav.home')} className="inline-flex items-center gap-4">
                             <span className="grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-white to-brand-50 shadow-glow">
-                                <img src="/brand/vin-logo.png" alt="VIN Cloud Solutions logo" className="h-11 w-auto" width="575" height="627" loading="lazy" />
+                                <img src="/brand/vin-logo.png" alt={t('common.logoAlt')} className="h-11 w-auto" width="575" height="627" loading="lazy" />
                             </span>
                             <span className="font-display text-xl font-semibold text-slate-50">
                                 VIN Cloud Solutions
                             </span>
                         </a>
                         <p className="mt-5 max-w-sm text-sm leading-relaxed text-slate-400">
-                            Helping organizations across {COMPANY_INFO.region} modernize, scale and thrive with AI, software and cloud, one solution at a time.
+                            {t('footer.blurb', { region: COMPANY_INFO.region })}
                         </p>
                         <div className="mt-6 flex gap-2">
                             {socials.map(({ href, label, icon }) => (
@@ -66,23 +69,23 @@ const Footer = () => {
                     </div>
 
                     <div className="md:col-span-3">
-                        <FooterColumn title="Services">
-                            {SERVICES.map((s) => (
+                        <FooterColumn title={t('footer.services')}>
+                            {c.SERVICES.map((s) => (
                                 <FooterLink key={s.id} href={s.href || `/#service-${s.id}`}>{s.short}</FooterLink>
                             ))}
                         </FooterColumn>
                     </div>
 
                     <div className="md:col-span-2">
-                        <FooterColumn title="Platforms">
-                            {PLATFORMS.map((p) => (
+                        <FooterColumn title={t('footer.platforms')}>
+                            {c.PLATFORMS.map((p) => (
                                 <FooterLink key={p.id} href="/#platforms">{p.name}</FooterLink>
                             ))}
                         </FooterColumn>
                     </div>
 
                     <div className="col-span-2 md:col-span-3">
-                        <FooterColumn title="Contact">
+                        <FooterColumn title={t('footer.contact')}>
                             <li className="flex items-start gap-2.5">
                                 <Mail size={16} className="mt-0.5 shrink-0 text-brand-300" />
                                 <a href={`mailto:${COMPANY_INFO.email}`} className="text-slate-400 hover:text-brand-200">
@@ -93,28 +96,28 @@ const Footer = () => {
                                 <Phone size={16} className="mt-0.5 shrink-0 text-brand-300" />
                                 <span className="text-slate-400">
                                     <a href={`tel:${COMPANY_INFO.phone.replace(/[^\d+]/g, '')}`} className="hover:text-brand-200">{COMPANY_INFO.phone}</a>
-                                    <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="block text-xs text-emerald-400/90 hover:text-emerald-300">Call or WhatsApp</a>
+                                    <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="block text-xs text-emerald-400/90 hover:text-emerald-300">{t('footer.callOrWhatsApp')}</a>
                                 </span>
                             </li>
                             <li className="flex items-start gap-2.5">
                                 <MapPin size={16} className="mt-0.5 shrink-0 text-brand-300" />
-                                <span className="text-slate-400">{COMPANY_INFO.location}<span className="block text-xs text-slate-500">Serving {COMPANY_INFO.region} &amp; beyond</span></span>
+                                <span className="text-slate-400">{COMPANY_INFO.location}<span className="block text-xs text-slate-500">{t('footer.serving', { region: COMPANY_INFO.region })}</span></span>
                             </li>
                         </FooterColumn>
                         <a
                             href="/#contact"
                             className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-200 hover:text-glow"
                         >
-                            Start a project <ArrowUpRight size={16} />
+                            {t('footer.startProject')} <ArrowUpRight size={16} />
                         </a>
                     </div>
                 </div>
 
                 <div className="flex flex-col items-center justify-between gap-3 border-t border-white/10 py-6 text-xs text-slate-500 md:flex-row">
-                    <p>© {currentYear} {COMPANY_INFO.name}. All rights reserved.</p>
-                    <nav aria-label="Footer" className="flex flex-wrap gap-5">
+                    <p>{t('footer.rights', { year: currentYear, name: COMPANY_INFO.name })}</p>
+                    <nav aria-label={t('nav.footer')} className="flex flex-wrap gap-5">
                         {NAV_LINKS.map((l) => (
-                            <a key={l.name} href={l.href} className="hover:text-slate-300">{l.name}</a>
+                            <a key={l.key} href={l.href} className="hover:text-slate-300">{t(`nav.${l.key}`)}</a>
                         ))}
                     </nav>
                 </div>

@@ -25,14 +25,14 @@ export const SOCIAL_LINKS = {
     tiktok: '',
 };
 
-// Hash links are root-relative so they also work from /blog pages.
+// Hash links are root-relative so they also work from /blog pages. Labels: ui `nav.<key>`.
 export const NAV_LINKS = [
-    { name: 'Services', href: '/#services' },
-    { name: 'AI', href: '/#ai' },
-    { name: 'Platforms', href: '/#platforms' },
-    { name: 'CRM', href: '/crm-solutions' },
-    { name: 'Work', href: '/#work' },
-    { name: 'Insights', href: '/blog' },
+    { key: 'services', href: '/#services' },
+    { key: 'ai', href: '/#ai' },
+    { key: 'platforms', href: '/#platforms' },
+    { key: 'crm', href: '/crm-solutions' },
+    { key: 'work', href: '/#work' },
+    { key: 'insights', href: '/blog' },
 ];
 
 export const HERO_STATS = [
@@ -311,12 +311,6 @@ export const CASE_CATEGORIES = [
     { id: 'cloud-infra', label: 'Cloud Infrastructure' },
     { id: 'crm', label: 'CRM' },
     { id: 'atlassian', label: 'Atlassian & DevOps' },
-];
-
-// Named clients shown in the "Trusted by" strip and on their case studies (logos approved by the owner).
-export const CLIENTS = [
-    { name: 'Asia Broadcasting Corporation', logo: '/brand/clients/asia-broadcasting-corporation.png', width: 514, height: 74, wide: true },
-    { name: 'Signature Shades', logo: '/brand/clients/signature-shades.png', width: 520, height: 450 },
 ];
 
 // `client` entries are named, owner-approved client projects (facts only, no invented metrics).

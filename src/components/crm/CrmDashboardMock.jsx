@@ -1,23 +1,26 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Sparkles, TrendingUp } from 'lucide-react';
+import { useI18n } from '../../i18n/I18nProvider';
+import Rich from '../../i18n/Rich';
 
 const FUNNEL = [
-    { label: 'Leads', value: 248 },
-    { label: 'Contacted', value: 196 },
-    { label: 'Qualified', value: 121 },
-    { label: 'Proposal', value: 64 },
-    { label: 'Won', value: 38 },
+    { key: 'leads', value: 248 },
+    { key: 'contacted', value: 196 },
+    { key: 'qualified', value: 121 },
+    { key: 'proposal', value: 64 },
+    { key: 'won', value: 38 },
 ];
 
 const RESPONSE = [
-    { label: '< 5 min', share: 0.62, color: '#67E8F9' },
-    { label: '< 30 min', share: 0.27, color: '#4588A0' },
-    { label: 'Later', share: 0.11, color: '#1E2F44' },
+    { key: 'under5', share: 0.62, color: '#67E8F9' },
+    { key: 'under30', share: 0.27, color: '#4588A0' },
+    { key: 'later', share: 0.11, color: '#1E2F44' },
 ];
 
 /** Donut chart of first-response times, drawn with stroke-dasharray segments. */
 const ResponseDonut = ({ total = 126 }) => {
+    const { t } = useI18n();
     const r = 40;
     const c = 2 * Math.PI * r;
     let offset = 0;
@@ -29,7 +32,7 @@ const ResponseDonut = ({ total = 126 }) => {
                     const len = s.share * c;
                     const el = (
                         <circle
-                            key={s.label}
+                            key={s.key}
                             cx="50" cy="50" r={r} fill="none" stroke={s.color} strokeWidth="11"
                             strokeDasharray={`${len - 1.5} ${c - len + 1.5}`} strokeDashoffset={-offset}
                         />
@@ -41,7 +44,7 @@ const ResponseDonut = ({ total = 126 }) => {
             <div className="absolute inset-0 grid place-items-center text-center">
                 <div>
                     <div className="font-display text-3xl font-semibold text-white">{total}</div>
-                    <div className="text-[10px] text-slate-400">leads today</div>
+                    <div className="text-[10px] text-slate-400">{t('mock.dash.leadsToday')}</div>
                 </div>
             </div>
         </div>
@@ -50,6 +53,7 @@ const ResponseDonut = ({ total = 126 }) => {
 
 /** Illustrative CRM dashboard (pipeline funnel, response times, KPIs, AI tip). Decorative only. */
 const CrmDashboardMock = ({ compact = false }) => {
+    const { t } = useI18n();
     const reduce = useReducedMotion();
     const float = (delay) =>
         reduce ? {} : { animate: { y: [0, -6, 0] }, transition: { duration: 6, delay, repeat: Infinity, ease: 'easeInOut' } };
@@ -64,7 +68,7 @@ const CrmDashboardMock = ({ compact = false }) => {
                         <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
                         <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
                     </div>
-                    <span className="font-mono text-[10px] text-slate-500">vin-crm · sales dashboard</span>
+                    <span className="font-mono text-[10px] text-slate-500">{t('mock.dash.window')}</span>
                     <span className="h-2 w-14 rounded-full bg-white/10" />
                 </div>
 
@@ -72,13 +76,13 @@ const CrmDashboardMock = ({ compact = false }) => {
                     {/* Funnel */}
                     <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4 sm:col-span-3">
                         <div className="mb-3 flex items-center justify-between">
-                            <span className="text-xs font-semibold text-slate-200">Sales pipeline</span>
-                            <span className="font-mono text-[10px] text-slate-500">this month</span>
+                            <span className="text-xs font-semibold text-slate-200">{t('mock.dash.pipeline')}</span>
+                            <span className="font-mono text-[10px] text-slate-500">{t('mock.dash.thisMonth')}</span>
                         </div>
                         <div className="space-y-2">
                             {FUNNEL.map((f, i) => (
-                                <div key={f.label} className="flex items-center gap-3">
-                                    <span className="w-16 shrink-0 text-[11px] text-slate-400">{f.label}</span>
+                                <div key={f.key} className="flex items-center gap-3">
+                                    <span className="w-16 shrink-0 text-[11px] text-slate-400">{t(`mock.dash.funnel.${f.key}`)}</span>
                                     <div className="h-5 flex-1 overflow-hidden rounded-md bg-white/5">
                                         <motion.div
                                             className="h-full rounded-md bg-gradient-to-r from-brand-500 to-glow"
@@ -97,12 +101,12 @@ const CrmDashboardMock = ({ compact = false }) => {
 
                     {/* Donut */}
                     <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4 sm:col-span-2">
-                        <span className="text-xs font-semibold text-slate-200">First response time</span>
+                        <span className="text-xs font-semibold text-slate-200">{t('mock.dash.response')}</span>
                         <div className="mt-3"><ResponseDonut /></div>
                         <ul className="mt-3 space-y-1">
                             {RESPONSE.map((s) => (
-                                <li key={s.label} className="flex items-center justify-between text-[10px] text-slate-400">
-                                    <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full" style={{ background: s.color }} />{s.label}</span>
+                                <li key={s.key} className="flex items-center justify-between text-[10px] text-slate-400">
+                                    <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full" style={{ background: s.color }} />{t(`mock.dash.times.${s.key}`)}</span>
                                     <span className="font-mono text-slate-300">{Math.round(s.share * 100)}%</span>
                                 </li>
                             ))}
@@ -111,7 +115,7 @@ const CrmDashboardMock = ({ compact = false }) => {
 
                     {!compact && (
                         <div className="grid grid-cols-3 gap-3 sm:col-span-5">
-                            {[['Open tasks', '12'], ['Meetings today', '7'], ['Pipeline value', '+18%']].map(([k, v]) => (
+                            {[[t('mock.dash.openTasks'), '12'], [t('mock.dash.meetings'), '7'], [t('mock.dash.pipelineValue'), '+18%']].map(([k, v]) => (
                                 <div key={k} className="rounded-xl border border-white/5 bg-white/[0.03] p-3">
                                     <div className="text-[10px] text-slate-500">{k}</div>
                                     <div className="mt-1 font-display text-lg font-semibold text-white">{v}</div>
@@ -128,10 +132,10 @@ const CrmDashboardMock = ({ compact = false }) => {
                 className="absolute bottom-0 -left-3 w-60 rounded-xl border border-ai/30 bg-ink-900/95 p-3 shadow-2xl backdrop-blur sm:-left-8"
             >
                 <div className="flex items-center gap-1.5 text-[11px] font-semibold text-violet-200">
-                    <Sparkles size={12} /> AI next best action
+                    <Sparkles size={12} /> {t('mock.dash.nextTitle')}
                 </div>
                 <p className="mt-1.5 text-[11px] leading-snug text-slate-300">
-                    Call <span className="text-white">Kasun P.</span> today. Opened your quote 3 times, buying score 92.
+                    <Rich text={t('mock.dash.nextAction')} strongClassName="font-normal text-white" />
                 </p>
             </motion.div>
 
@@ -141,7 +145,7 @@ const CrmDashboardMock = ({ compact = false }) => {
                     className="absolute -right-3 -top-5 flex items-center gap-2 rounded-xl border border-emerald-400/30 bg-ink-900/95 px-3 py-2 shadow-2xl backdrop-blur sm:-right-6"
                 >
                     <TrendingUp size={14} className="text-emerald-300" />
-                    <span className="text-[11px] text-slate-200">Win rate <span className="font-semibold text-emerald-300">+9%</span> vs last month</span>
+                    <span className="text-[11px] text-slate-200"><Rich text={t('mock.dash.winRate')} strongClassName="font-semibold text-emerald-300" /></span>
                 </motion.div>
             )}
         </div>

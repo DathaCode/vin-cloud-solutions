@@ -1,7 +1,6 @@
 import React, { lazy, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, MousePointer2 } from 'lucide-react';
-import { AI_CAPABILITIES } from '../../utils/constants';
 import Container from '../common/Container';
 import Section from '../common/Section';
 import SectionHeading from '../common/SectionHeading';
@@ -10,11 +9,14 @@ import Badge from '../common/Badge';
 import Icon from '../common/Icon';
 import Button from '../common/Button';
 import SceneMount from '../three/SceneMount';
+import { useI18n } from '../../i18n/I18nProvider';
 
 const NeuralScene = lazy(() => import('../three/NeuralScene'));
-const OUTCOMES = AI_CAPABILITIES.map((c) => c.outcome);
 
 const AIInnovation = () => {
+    const { t, c } = useI18n();
+    const AI_CAPABILITIES = c.AI_CAPABILITIES;
+    const OUTCOMES = AI_CAPABILITIES.map((cap) => cap.outcome);
     const [activeIndex, setActiveIndex] = useState(0);
     const active = AI_CAPABILITIES[activeIndex];
 
@@ -36,16 +38,16 @@ const AIInnovation = () => {
             <Container>
                 <SectionHeading
                     id="ai-title"
-                    eyebrow="AI-powered innovation"
-                    title="Put AI to work on"
-                    highlight="your real business data."
-                    description="We take AI from idea to production: secure, grounded in your systems and measured against business outcomes. Pick a capability to see how data flows through it."
+                    eyebrow={t('ai.eyebrow')}
+                    title={t('ai.title')}
+                    highlight={t('ai.highlight')}
+                    description={t('ai.description')}
                 />
 
                 <div className="mt-14 grid gap-8 lg:grid-cols-12">
                     {/* Capability selector */}
                     <Reveal className="lg:col-span-4">
-                        <div role="tablist" aria-label="AI capabilities" aria-orientation="vertical" onKeyDown={onKeyDown} className="flex flex-col gap-2">
+                        <div role="tablist" aria-label={t('ai.tablist')} aria-orientation="vertical" onKeyDown={onKeyDown} className="flex flex-col gap-2">
                             {AI_CAPABILITIES.map((cap, i) => {
                                 const selected = i === activeIndex;
                                 return (
@@ -80,14 +82,16 @@ const AIInnovation = () => {
                             <div className="flex items-center justify-between border-b border-white/5 px-5 py-3 font-mono text-[11px] text-slate-500">
                                 <span className="flex items-center gap-2">
                                     <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse-soft" />
-                                    neural-explorer · live
+                                    {t('ai.live')}
                                 </span>
-                                <span className="hidden items-center gap-1.5 sm:flex"><MousePointer2 size={12} /> drag to rotate</span>
+                                <span className="hidden items-center gap-1.5 sm:flex"><MousePointer2 size={12} /> {t('ai.drag')}</span>
                             </div>
 
                             <SceneMount
                                 scene={NeuralScene}
                                 outputs={OUTCOMES}
+                                inputs={t('ai.inputs')}
+                                ariaLabel={t('ai.sceneAria')}
                                 activeIndex={activeIndex}
                                 className="relative h-[300px] sm:h-[380px]"
                                 fallback={<div className="h-full w-full bg-[radial-gradient(circle,rgba(167,139,250,0.15),transparent_60%)]" />}
@@ -111,7 +115,7 @@ const AIInnovation = () => {
                                             </div>
                                         </div>
                                         <Button href="/?service=ai#contact" variant="secondary" size="sm" className="self-start md:self-end">
-                                            Plan an AI pilot <ArrowRight size={16} />
+                                            {t('ai.pilot')} <ArrowRight size={16} />
                                         </Button>
                                     </motion.div>
                                 </AnimatePresence>

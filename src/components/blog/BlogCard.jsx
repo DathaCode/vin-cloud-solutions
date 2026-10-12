@@ -5,8 +5,11 @@ import { formatDateShort } from '../../utils/formatDate';
 import SpotlightCard from '../common/SpotlightCard';
 import Badge from '../common/Badge';
 import BlogCover from './BlogCover';
+import { useI18n } from '../../i18n/I18nProvider';
 
-const BlogCard = ({ post }) => (
+const BlogCard = ({ post }) => {
+    const { locale } = useI18n();
+    return (
     <SpotlightCard as="article" className="h-full">
         <Link to={`/blog/${post.slug}`} className="flex h-full flex-col">
             <BlogCover post={post} className="h-44" />
@@ -16,7 +19,7 @@ const BlogCard = ({ post }) => (
                 <p className="mt-2 line-clamp-3 flex-1 text-sm text-slate-400">{post.excerpt}</p>
                 <div className="mt-5 flex items-center justify-between text-xs text-slate-500">
                     <span className="flex items-center gap-3">
-                        <time dateTime={post.date}>{formatDateShort(post.date)}</time>
+                        <time dateTime={post.date}>{formatDateShort(post.date, locale)}</time>
                         {post.readingTime && (
                             <span className="flex items-center gap-1"><Clock size={12} aria-hidden="true" /> {post.readingTime}</span>
                         )}
@@ -26,6 +29,7 @@ const BlogCard = ({ post }) => (
             </div>
         </Link>
     </SpotlightCard>
-);
+    );
+};
 
 export default BlogCard;

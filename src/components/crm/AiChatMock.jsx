@@ -2,16 +2,18 @@ import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Bot, CalendarCheck, Flame, Sparkles } from 'lucide-react';
 import BrandIcon from '../common/BrandIcon';
+import { useI18n } from '../../i18n/I18nProvider';
 
 const MESSAGES = [
-    { from: 'customer', text: 'Hi, is the 3-bedroom apartment in Kiribathgoda still available? Can I visit this weekend?' },
-    { from: 'ai', text: 'Hi Kasun! Yes, it’s available. I can book a viewing on Saturday at 10:00 AM or 2:30 PM. Which suits you?' },
-    { from: 'customer', text: 'Saturday 10 works.' },
-    { from: 'ai', text: 'Booked for Saturday 10:00 AM. Please bring your NIC. Our agent Dilani will meet you there.' },
+    { from: 'customer', key: 'm1' },
+    { from: 'ai', key: 'm2' },
+    { from: 'customer', key: 'm3' },
+    { from: 'ai', key: 'm4' },
 ];
 
 /** Phone conversation handled by the AI assistant, plus the CRM record it updates. Decorative only. */
 const AiChatMock = () => {
+    const { t } = useI18n();
     const reduce = useReducedMotion();
 
     return (
@@ -22,8 +24,8 @@ const AiChatMock = () => {
                     <div className="mb-3 flex items-center gap-2 border-b border-white/5 pb-2">
                         <span className="grid h-7 w-7 place-items-center rounded-full bg-emerald-500 text-white"><BrandIcon name="whatsapp" size={14} /></span>
                         <span className="text-[11px] leading-tight">
-                            <span className="block font-semibold text-white">Your business</span>
-                            <span className="text-emerald-300">AI assistant · online</span>
+                            <span className="block font-semibold text-white">{t('mock.chat.business')}</span>
+                            <span className="text-emerald-300">{t('mock.chat.online')}</span>
                         </span>
                     </div>
                     <div className="space-y-2">
@@ -38,7 +40,7 @@ const AiChatMock = () => {
                                     m.from === 'ai' ? 'ml-auto rounded-br-md bg-emerald-600/80 text-white' : 'rounded-bl-md bg-white/10 text-slate-200'
                                 }`}
                             >
-                                {m.text}
+                                {t(`mock.chat.${m.key}`)}
                             </motion.p>
                         ))}
                     </div>
@@ -54,21 +56,21 @@ const AiChatMock = () => {
                 className="rounded-2xl border border-white/10 bg-ink-850/90 p-4 shadow-2xl backdrop-blur"
             >
                 <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-slate-200">CRM record updated</span>
-                    <span className="flex items-center gap-1 rounded-full bg-ai/15 px-2 py-0.5 text-[10px] text-violet-200"><Bot size={11} /> by AI</span>
+                    <span className="text-xs font-semibold text-slate-200">{t('mock.chat.recordUpdated')}</span>
+                    <span className="flex items-center gap-1 rounded-full bg-ai/15 px-2 py-0.5 text-[10px] text-violet-200"><Bot size={11} /> {t('mock.chat.byAi')}</span>
                 </div>
                 <div className="mt-3 flex items-center gap-3">
                     <span className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-brand-300 to-ai text-xs font-bold text-ink-950">KP</span>
                     <div>
                         <p className="text-sm font-semibold text-white">Kasun P.</p>
-                        <p className="text-[11px] text-slate-400">Source: WhatsApp · Real estate enquiry</p>
+                        <p className="text-[11px] text-slate-400">{t('mock.chat.source')}</p>
                     </div>
-                    <span className="ml-auto flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-orange-400/15 px-2 py-1 text-[10px] font-semibold text-orange-300"><Flame size={11} /> Hot lead</span>
+                    <span className="ml-auto flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-orange-400/15 px-2 py-1 text-[10px] font-semibold text-orange-300"><Flame size={11} /> {t('mock.chat.hot')}</span>
                 </div>
                 <ul className="mt-4 space-y-2 text-[11px] text-slate-300">
-                    <li className="flex items-center gap-2"><CalendarCheck size={13} className="text-glow" /> Site visit booked: Sat 10:00 AM</li>
-                    <li className="flex items-center gap-2"><Sparkles size={13} className="text-violet-300" /> Summary: wants 3BR, visiting with family, needs financing info</li>
-                    <li className="flex items-center gap-2"><span className="h-3 w-3 rounded-full border-2 border-brand-300" /> Assigned to Dilani · reminder set</li>
+                    <li className="flex items-center gap-2"><CalendarCheck size={13} className="text-glow" /> {t('mock.chat.booked')}</li>
+                    <li className="flex items-center gap-2"><Sparkles size={13} className="text-violet-300" /> {t('mock.chat.summary')}</li>
+                    <li className="flex items-center gap-2"><span className="h-3 w-3 rounded-full border-2 border-brand-300" /> {t('mock.chat.assigned')}</li>
                 </ul>
             </motion.div>
         </div>

@@ -2,13 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Menu, X, ChevronDown, ArrowRight } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useScrollPosition } from '../../hooks/useScrollPosition';
-import { NAV_LINKS, SERVICES } from '../../utils/constants';
+import { NAV_LINKS } from '../../utils/constants';
 import Button from './Button';
 import Container from './Container';
 import Logo from './Logo';
 import Icon from './Icon';
+import LanguageSwitcher from './LanguageSwitcher';
+import { useI18n } from '../../i18n/I18nProvider';
 
 const ServicesMenu = () => {
+    const { t, c } = useI18n();
     const [open, setOpen] = useState(false);
 
     return (
@@ -20,7 +23,7 @@ const ServicesMenu = () => {
                 onFocus={() => setOpen(true)}
                 className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition-colors hover:text-white"
             >
-                Services
+                {t('nav.services')}
                 <ChevronDown size={14} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
             </a>
 
@@ -35,7 +38,7 @@ const ServicesMenu = () => {
                         onBlur={(e) => !e.currentTarget.contains(e.relatedTarget) && setOpen(false)}
                     >
                         <div className="grid grid-cols-2 gap-1 rounded-2xl border border-white/10 bg-ink-850/95 p-2 shadow-2xl backdrop-blur-xl">
-                            {SERVICES.map((s) => (
+                            {c.SERVICES.map((s) => (
                                 <a
                                     key={s.id}
                                     href={s.href || `/#service-${s.id}`}
@@ -60,6 +63,7 @@ const ServicesMenu = () => {
 };
 
 const Navbar = () => {
+    const { t } = useI18n();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const isScrolled = useScrollPosition() > 20;
 
@@ -75,27 +79,28 @@ const Navbar = () => {
             }`}
         >
             <Container>
-                <nav aria-label="Main" className="flex h-16 items-center justify-between md:h-20">
-                    <a href="/" aria-label="VIN Cloud Solutions home">
+                <nav aria-label={t('nav.main')} className="flex h-16 items-center justify-between md:h-20">
+                    <a href="/" aria-label={t('nav.home')}>
                         <Logo />
                     </a>
 
                     <div className="hidden items-center gap-1 lg:flex">
                         <ServicesMenu />
-                        {NAV_LINKS.filter((l) => l.name !== 'Services').map((link) => (
+                        {NAV_LINKS.filter((l) => l.key !== 'services').map((link) => (
                             <a
-                                key={link.name}
+                                key={link.key}
                                 href={link.href}
                                 className="rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition-colors hover:text-white"
                             >
-                                {link.name}
+                                {t(`nav.${link.key}`)}
                             </a>
                         ))}
                     </div>
 
-                    <div className="hidden lg:block">
+                    <div className="hidden items-center gap-2 lg:flex">
+                        <LanguageSwitcher />
                         <Button href="/#contact" size="sm">
-                            Book a consultation
+                            {t('nav.book')}
                             <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
                         </Button>
                     </div>
@@ -103,7 +108,7 @@ const Navbar = () => {
                     <button
                         onClick={() => setIsMenuOpen((o) => !o)}
                         className="rounded-lg p-2 text-slate-200 transition-colors hover:bg-white/5 lg:hidden"
-                        aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+                        aria-label={isMenuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
                         aria-expanded={isMenuOpen}
                     >
                         {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -122,17 +127,21 @@ const Navbar = () => {
                         <Container className="flex flex-col gap-1 py-6">
                             {NAV_LINKS.map((link) => (
                                 <a
-                                    key={link.name}
+                                    key={link.key}
                                     href={link.href}
                                     onClick={() => setIsMenuOpen(false)}
                                     className="flex items-center justify-between rounded-xl px-3 py-3 font-display text-lg text-slate-100 hover:bg-white/5"
                                 >
-                                    {link.name}
+                                    {t(`nav.${link.key}`)}
                                     <ArrowRight size={18} className="text-brand-300" />
                                 </a>
                             ))}
+                            <div className="mt-4">
+                                <p className="mb-2 px-1 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-500">{t('nav.language')}</p>
+                                <LanguageSwitcher variant="inline" />
+                            </div>
                             <Button href="/#contact" className="mt-4 w-full" onClick={() => setIsMenuOpen(false)}>
-                                Book a consultation
+                                {t('nav.book')}
                             </Button>
                         </Container>
                     </motion.div>

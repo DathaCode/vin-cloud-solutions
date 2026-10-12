@@ -1,36 +1,40 @@
-import { SERVICES, PLATFORMS } from '../../utils/constants';
+import { useMemo } from 'react';
+import { EN_CONTENT } from '../../i18n/content';
+import { tEn } from '../../i18n/translate';
+import { useI18n } from '../../i18n/I18nProvider';
 
 export const FORMSPREE_ENDPOINT = import.meta.env.VITE_FORMSPREE_ENDPOINT || 'https://formspree.io/f/mppqanpv';
 
-export const STEPS = [
-    { id: 'needs', label: 'Your needs' },
-    { id: 'project', label: 'Project' },
-    { id: 'contact', label: 'Contact' },
-    { id: 'review', label: 'Review' },
-];
+// Option ids are stored in drafts and sent to Formspree; labels come from ui `form.*` / localized content.
+const STEP_IDS = ['needs', 'project', 'contact', 'review'];
+const STAGE_IDS = ['idea', 'planning', 'improve', 'support'];
+const TIMELINE_IDS = ['asap', 'month', '1-3', '3-6', 'flexible'];
+const METHOD_IDS = ['email', 'whatsapp', 'phone'];
 
-export const SERVICE_OPTIONS = [
-    ...SERVICES.map((s) => ({ id: s.id, label: s.short, icon: s.icon })),
-    { id: 'data-migration', label: 'Data Migration', icon: 'Database' },
-    { id: 'managed', label: 'Managed Cloud & Support', icon: 'ShieldCheck' },
-];
+/** All option lists for the request form, labelled in the given language. */
+export const buildOptions = (c, t) => ({
+    steps: STEP_IDS.map((id) => ({ id, label: t(`form.steps.${id}`) })),
+    services: [
+        ...c.SERVICES.map((s) => ({ id: s.id, label: s.short, icon: s.icon })),
+        { id: 'data-migration', label: t('form.extraServices.dataMigration'), icon: 'Database' },
+        { id: 'managed', label: t('form.extraServices.managed'), icon: 'ShieldCheck' },
+    ],
+    platforms: [...c.PLATFORMS.map((p) => ({ id: p.id, label: p.name, color: p.color })), { id: 'unsure', label: t('form.notSure') }],
+    stages: STAGE_IDS.map((id) => ({ id, label: t(`form.stages.${id}.label`), hint: t(`form.stages.${id}.hint`) })),
+    timelines: TIMELINE_IDS.map((id) => ({ id, label: t(`form.timelines.${id}`) })),
+    methods: METHOD_IDS.map((id) => ({ id, label: t(`form.methods.${id}`) })),
+});
 
-export const PLATFORM_OPTIONS = [...PLATFORMS.map((p) => ({ id: p.id, label: p.name, color: p.color })), { id: 'unsure', label: 'Not sure yet' }];
+/** Labels for the current language (what the visitor sees). */
+export const useRequestOptions = () => {
+    const { c, t } = useI18n();
+    return useMemo(() => buildOptions(c, t), [c, t]);
+};
 
-export const STAGE_OPTIONS = [
-    { id: 'idea', label: 'New idea', hint: 'Exploring what’s possible' },
-    { id: 'planning', label: 'Planning & scoping', hint: 'Requirements are taking shape' },
-    { id: 'improve', label: 'Improve existing system', hint: 'Modernize, migrate or extend' },
-    { id: 'support', label: 'Urgent issue / support', hint: 'Something needs fixing now' },
-];
+/** English labels, used in the email the team receives whatever language the visitor uses. */
+export const EN_OPTIONS = buildOptions(EN_CONTENT, tEn);
 
-export const TIMELINE_OPTIONS = ['ASAP', 'Within 1 month', '1–3 months', '3–6 months', 'Flexible'];
-
-export const CONTACT_METHODS = [
-    { id: 'email', label: 'Email' },
-    { id: 'whatsapp', label: 'WhatsApp' },
-    { id: 'phone', label: 'Phone call' },
-];
+export const STEP_COUNT = STEP_IDS.length;
 
 export const EMPTY_REQUEST = {
     services: [],

@@ -4,15 +4,15 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Html, OrbitControls } from '@react-three/drei';
 import { isCoarsePointer, prefersReducedMotion, useLabelsReady } from './utils';
 
-const INPUTS = ['Documents', 'Tickets', 'Email & chat', 'Databases', 'Images & forms'];
+const DEFAULT_INPUTS = ['Documents', 'Tickets', 'Email & chat', 'Databases', 'Images & forms'];
 const HIDDEN = [7, 7];
 const PULSES = 70;
 const BASE = new THREE.Color('#5AAFC8');
 const HOT = new THREE.Color('#67E8F9');
 const AI = new THREE.Color('#A78BFA');
 
-const buildLayers = (outputs) => {
-    const sizes = [INPUTS.length, ...HIDDEN, outputs.length];
+const buildLayers = (outputs, inputCount) => {
+    const sizes = [inputCount, ...HIDDEN, outputs.length];
     const xs = [-3.1, -1.05, 1.05, 3.1];
     return sizes.map((n, li) =>
         Array.from({ length: n }, (_, i) => {
@@ -23,11 +23,11 @@ const buildLayers = (outputs) => {
     );
 };
 
-const Network = ({ outputs, activeIndex }) => {
+const Network = ({ outputs, inputs, activeIndex }) => {
     const group = useRef();
     const pulses = useRef();
     const reduce = prefersReducedMotion();
-    const layers = useMemo(() => buildLayers(outputs), [outputs]);
+    const layers = useMemo(() => buildLayers(outputs, inputs.length), [outputs, inputs.length]);
     const nodes = useMemo(() => layers.flatMap((layer, li) => layer.map((p, i) => ({ p, li, i }))), [layers]);
     const last = layers.length - 1;
     const labelsReady = useLabelsReady();
@@ -125,7 +125,7 @@ const Network = ({ outputs, activeIndex }) => {
                                             : 'border-white/10 bg-ink-900/70 text-slate-400'
                                     }`}
                                 >
-                                    {li === 0 ? INPUTS[i] : outputs[i]}
+                                    {li === 0 ? inputs[i] : outputs[i]}
                                 </span>
                             </Html>
                         )}
@@ -141,7 +141,7 @@ const Network = ({ outputs, activeIndex }) => {
     );
 };
 
-const NeuralScene = ({ active = true, outputs, activeIndex = 0 }) => {
+const NeuralScene = ({ active = true, outputs, inputs = DEFAULT_INPUTS, activeIndex = 0, ariaLabel }) => {
     const interactive = !isCoarsePointer();
 
     return (
@@ -150,10 +150,10 @@ const NeuralScene = ({ active = true, outputs, activeIndex = 0 }) => {
             dpr={[1, 1.75]}
             camera={{ position: [0, 0, 7.4], fov: 45 }}
             gl={{ antialias: true, alpha: true }}
-            aria-label="Interactive 3D neural network showing how enterprise data flows through AI into business outcomes"
+            aria-label={ariaLabel}
             role="img"
         >
-            <Network outputs={outputs} activeIndex={activeIndex} />
+            <Network outputs={outputs} inputs={inputs} activeIndex={activeIndex} />
             {interactive && (
                 <OrbitControls
                     enableZoom={false}

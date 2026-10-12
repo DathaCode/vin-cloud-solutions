@@ -8,7 +8,7 @@ const TINTS = {
 };
 
 const BlogCover = ({ post, className = '' }) => {
-    const [a, b] = TINTS[post.category] || ['#7CC4DA', '#12394A'];
+    const [a, b] = TINTS[post.baseCategory || post.category] || ['#7CC4DA', '#12394A'];
 
     return (
         <div

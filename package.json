@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prebuild": "node scripts/i18n.mjs check --warn",
+    "i18n:check": "node scripts/i18n.mjs check",
+    "i18n:accept": "node scripts/i18n.mjs accept",
+    "i18n:export": "node scripts/i18n.mjs export"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.22",

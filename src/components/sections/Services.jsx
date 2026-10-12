@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Check } from 'lucide-react';
-import { SERVICES } from '../../utils/constants';
 import Container from '../common/Container';
 import Section from '../common/Section';
 import SectionHeading from '../common/SectionHeading';
@@ -10,6 +9,7 @@ import Reveal from '../common/Reveal';
 import Badge from '../common/Badge';
 import Icon from '../common/Icon';
 import FeaturePreview from '../crm/FeaturePreview';
+import { useI18n } from '../../i18n/I18nProvider';
 
 // Bento layout: AI and CRM cards span two columns; licensing fills the last cell.
 const SPANS = {
@@ -19,23 +19,26 @@ const SPANS = {
 };
 
 // Small illustrative copilot exchange that fills the featured AI card.
-const AIPreview = () => (
+const AIPreview = () => {
+    const { t } = useI18n();
+    return (
     <div aria-hidden="true" className="rounded-2xl border border-white/10 bg-ink-950/60 p-4 font-mono text-[12px] leading-relaxed">
         <div className="flex items-center gap-2 text-slate-500">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse-soft" /> vin-copilot
         </div>
         <p className="mt-3 text-slate-300">
-            <span className="text-brand-300">you ›</span> Summarize open P1 incidents and draft an update for leadership.
+            <span className="text-brand-300">{t('services.previewYou')} ›</span> {t('services.previewPrompt')}
         </p>
         <p className="mt-2 text-slate-400">
-            <span className="text-violet-300">ai ›</span> 3 P1s open (Jira · ServiceNow). Root cause identified for 2; ETA 4h.
-            Draft posted to <span className="text-slate-200">#exec-updates</span> in Teams, with sources cited.
+            <span className="text-violet-300">ai ›</span> {t('services.previewAnswer')}
             <span className="ml-0.5 inline-block h-3.5 w-1.5 translate-y-0.5 bg-glow animate-pulse-soft" />
         </p>
     </div>
-);
+    );
+};
 
 const ServiceCard = ({ service, index }) => {
+    const { t } = useI18n();
     const featured = service.featured;
 
     return (
@@ -52,8 +55,8 @@ const ServiceCard = ({ service, index }) => {
                             <span className={`grid h-12 w-12 place-items-center rounded-xl border ${featured ? 'border-ai/40 bg-ai/15 text-violet-200' : 'border-brand-300/25 bg-brand-500/10 text-brand-200'}`}>
                                 <Icon name={service.icon} size={22} />
                             </span>
-                            {featured && <Badge variant="ai">New · Flagship</Badge>}
-                            {service.isNew && <Badge variant="accent">New</Badge>}
+                            {featured && <Badge variant="ai">{t('services.flagship')}</Badge>}
+                            {service.isNew && <Badge variant="accent">{t('services.new')}</Badge>}
                         </div>
                         <h3 className={`font-semibold ${featured ? 'text-2xl md:text-3xl' : 'text-xl'}`}>{service.title}</h3>
                         <p className="mt-3 text-sm leading-relaxed text-slate-400 md:text-base">{service.description}</p>
@@ -77,9 +80,9 @@ const ServiceCard = ({ service, index }) => {
                             <Link
                                 to={service.href || (service.id === 'ai' ? '/#ai' : `/?service=${service.id}#contact`)}
                                 className="inline-flex items-center gap-1 text-sm font-semibold text-brand-200 hover:text-glow"
-                                aria-label={`Learn more about ${service.title}`}
+                                aria-label={t('services.learnMore', { title: service.title })}
                             >
-                                {service.href ? 'Explore CRM' : service.id === 'ai' ? 'Explore AI' : 'Discuss'} <ArrowUpRight size={16} />
+                                {service.href ? t('services.exploreCrm') : service.id === 'ai' ? t('services.exploreAi') : t('services.discuss')} <ArrowUpRight size={16} />
                             </Link>
                         </div>
                     </div>
@@ -89,23 +92,26 @@ const ServiceCard = ({ service, index }) => {
     );
 };
 
-const Services = () => (
+const Services = () => {
+    const { t, c } = useI18n();
+    return (
     <Section id="services" labelledBy="services-title">
         <Container>
             <SectionHeading
                 id="services-title"
-                eyebrow="What we do"
-                title="End-to-end technology services,"
-                highlight="one accountable partner."
-                description="Strategic thinking combined with hands-on engineering, from AI and custom software to CRM, cloud infrastructure, integrations and licensing."
+                eyebrow={t('services.eyebrow')}
+                title={t('services.title')}
+                highlight={t('services.highlight')}
+                description={t('services.description')}
             />
             <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-                {SERVICES.map((service, index) => (
+                {c.SERVICES.map((service, index) => (
                     <ServiceCard key={service.id} service={service} index={index} />
                 ))}
             </div>
         </Container>
     </Section>
-);
+    );
+};
 
 export default Services;

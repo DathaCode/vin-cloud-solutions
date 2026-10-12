@@ -1,17 +1,6 @@
-export const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    });
-};
+// Dates follow the visitor's language (pass the BCP-47 locale from useI18n().locale).
+export const formatDate = (dateString, locale = 'en-US') =>
+    new Date(dateString).toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' });
 
-export const formatDateShort = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-    });
-};
+export const formatDateShort = (dateString, locale = 'en-US') =>
+    new Date(dateString).toLocaleDateString(locale, { year: 'numeric', month: 'short', day: 'numeric' });

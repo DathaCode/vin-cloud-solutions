@@ -2,9 +2,11 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import Badge from '../common/Badge';
 import Icon from '../common/Icon';
+import { useI18n } from '../../i18n/I18nProvider';
 
 /** Horizontally scrolling add-on cards with arrow controls and a progress bar (swipe works natively on touch). */
 const AddonsCarousel = ({ items }) => {
+    const { t } = useI18n();
     const track = useRef(null);
     const [progress, setProgress] = useState(0);
     const [atStart, setAtStart] = useState(true);
@@ -37,7 +39,7 @@ const AddonsCarousel = ({ items }) => {
     return (
         <div>
             <div className="mb-6 flex justify-end gap-2">
-                {[[-1, ArrowLeft, 'Previous add-ons', atStart], [1, ArrowRight, 'Next add-ons', atEnd]].map(([dir, Arrow, label, disabled]) => (
+                {[[-1, ArrowLeft, t('addons.previous'), atStart], [1, ArrowRight, t('addons.next'), atEnd]].map(([dir, Arrow, label, disabled]) => (
                     <button
                         key={label}
                         type="button"
@@ -54,7 +56,7 @@ const AddonsCarousel = ({ items }) => {
             <ul
                 ref={track}
                 onScroll={update}
-                aria-label="Available CRM add-ons"
+                aria-label={t('addons.aria')}
                 style={{ maskImage: `linear-gradient(to right, ${atStart ? 'black' : 'transparent'}, black 8%, black 92%, ${atEnd ? 'black' : 'transparent'})` }}
                 className="-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-5 overflow-x-auto scroll-smooth px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
@@ -68,7 +70,7 @@ const AddonsCarousel = ({ items }) => {
                             <span className="grid h-11 w-11 place-items-center rounded-xl border border-brand-300/25 bg-brand-500/10 text-brand-200">
                                 <Icon name={a.icon} size={20} />
                             </span>
-                            <Badge variant="accent">+ Add-on</Badge>
+                            <Badge variant="accent">{t('addons.badge')}</Badge>
                         </div>
                         <h3 className="mt-5 text-lg font-semibold">{a.title}</h3>
                         <p className="mt-2 text-sm leading-relaxed text-slate-400">{a.description}</p>

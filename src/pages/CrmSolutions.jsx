@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Check, Clock, MapPin, Plug } from 'lucide-react';
 import PageLayout from '../components/common/PageLayout';
@@ -17,15 +17,12 @@ import AiChatMock from '../components/crm/AiChatMock';
 import AddonsCarousel from '../components/crm/AddonsCarousel';
 import CrmComparison from '../components/crm/CrmComparison';
 import { useSeo } from '../utils/seo';
-import { CASE_STUDIES, SITE_URL } from '../utils/constants';
-import {
-    CRM_HERO, CRM_MODELS, CRM_FEATURES, CRM_AI, CRM_ADDONS, CRM_INTEGRATIONS, CRM_INDUSTRIES, CRM_STEPS, CRM_RESULTS, CRM_FAQ,
-    CRM_COMPARISON,
-} from '../utils/crmContent';
+import { SITE_URL } from '../utils/constants';
+import { useI18n } from '../i18n/I18nProvider';
 
 const CONTACT = '/?service=crm#contact';
 
-const serviceJsonLd = {
+const serviceJsonLd = (CRM_HERO) => ({
     '@context': 'https://schema.org',
     '@type': 'Service',
     name: 'CRM Solutions',
@@ -34,7 +31,7 @@ const serviceJsonLd = {
     areaServed: ['Sri Lanka', 'South Asia'],
     url: `${SITE_URL}/crm-solutions`,
     description: CRM_HERO.description,
-};
+});
 
 const StatCard = ({ stat }) => (
     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
@@ -45,6 +42,9 @@ const StatCard = ({ stat }) => (
 );
 
 const Hero = () => {
+    const { t, c } = useI18n();
+    const { CRM_HERO, CRM_SCALE, CRM_MODELS, CRM_FEATURES, CRM_AI, CRM_ADDONS, CRM_INTEGRATIONS, CRM_INDUSTRIES,
+        CRM_STEPS, CRM_RESULTS, CRM_FAQ, CRM_COMPARISON } = c;
     const reduce = useReducedMotion();
     const fade = (delay) => ({
         initial: reduce ? false : { opacity: 0, y: 24 },
@@ -68,10 +68,13 @@ const Hero = () => {
                         </motion.h1>
                         <motion.p {...fade(0.16)} className="mt-6 max-w-xl text-base leading-relaxed text-slate-400 md:text-lg">{CRM_HERO.description}</motion.p>
                         <motion.div {...fade(0.24)} className="mt-9 flex flex-col gap-3 sm:flex-row">
-                            <Button href={CONTACT} size="lg">Book a CRM demo <ArrowRight size={18} /></Button>
-                            <Button href="#crm-features" variant="secondary" size="lg">See how it works</Button>
+                            <Button href={CONTACT} size="lg">{t('crm.demo')} <ArrowRight size={18} /></Button>
+                            <Button href="#crm-features" variant="secondary" size="lg">{t('crm.howItWorks')}</Button>
                         </motion.div>
-                        <motion.div {...fade(0.32)} className="mt-10 max-w-xs"><StatCard stat={CRM_HERO.stat} /></motion.div>
+                        <motion.div {...fade(0.32)} className="mt-10 grid max-w-xl gap-4 sm:grid-cols-2">
+                            <StatCard stat={CRM_SCALE} />
+                            <StatCard stat={CRM_HERO.stat} />
+                        </motion.div>
                     </div>
                     <motion.div
                         initial={reduce ? false : { opacity: 0, scale: 0.95 }}
@@ -87,15 +90,59 @@ const Hero = () => {
     );
 };
 
-const Models = () => (
+const ScaleProof = () => {
+    const { t, c } = useI18n();
+    const { CRM_HERO, CRM_SCALE, CRM_MODELS, CRM_FEATURES, CRM_AI, CRM_ADDONS, CRM_INTEGRATIONS, CRM_INDUSTRIES,
+        CRM_STEPS, CRM_RESULTS, CRM_FAQ, CRM_COMPARISON } = c;
+    return (
+    <Section id="crm-scale" labelledBy="crm-scale-title" padding="pb-20 md:pb-28">
+        <Container>
+            <Reveal>
+                <div className="relative overflow-hidden rounded-3xl border border-brand-300/25 bg-gradient-to-br from-brand-500/20 via-ink-850/70 to-ai/10 p-6 md:p-10">
+                    <div aria-hidden="true" className="absolute inset-0 bg-grid opacity-30 mask-radial" />
+                    <div className="relative grid items-center gap-10 lg:grid-cols-12">
+                        <div className="lg:col-span-4">
+                            <p className="font-display text-7xl font-semibold leading-none text-gradient md:text-8xl">{CRM_SCALE.value}</p>
+                            <p className="mt-3 text-sm font-semibold text-slate-100">{CRM_SCALE.label}</p>
+                            <p className="mt-1 text-xs text-slate-400">{t('crm.scaleSector')}</p>
+                        </div>
+                        <div className="lg:col-span-8">
+                            <span className="eyebrow">{CRM_SCALE.eyebrow}</span>
+                            <h2 id="crm-scale-title" className="mt-4 text-2xl font-semibold md:text-3xl">
+                                {CRM_SCALE.title} <span className="text-gradient">{CRM_SCALE.highlight}</span>
+                            </h2>
+                            <p className="mt-3 text-sm leading-relaxed text-slate-300 md:text-base">{CRM_SCALE.description}</p>
+                            <ul className="mt-6 grid gap-3 sm:grid-cols-3">
+                                {CRM_SCALE.points.map((pt) => (
+                                    <li key={pt.title} className="rounded-2xl border border-white/10 bg-ink-950/40 p-4">
+                                        <Icon name={pt.icon} size={18} className="text-glow" />
+                                        <p className="mt-2 text-sm font-semibold text-slate-100">{pt.title}</p>
+                                        <p className="mt-1 text-xs leading-relaxed text-slate-400">{pt.text}</p>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </Reveal>
+        </Container>
+    </Section>
+    );
+};
+
+const Models = () => {
+    const { t, c } = useI18n();
+    const { CRM_HERO, CRM_SCALE, CRM_MODELS, CRM_FEATURES, CRM_AI, CRM_ADDONS, CRM_INTEGRATIONS, CRM_INDUSTRIES,
+        CRM_STEPS, CRM_RESULTS, CRM_FAQ, CRM_COMPARISON } = c;
+    return (
     <Section id="crm-options" labelledBy="crm-options-title" className="bg-ink-950/40">
         <Container>
             <SectionHeading
                 id="crm-options-title"
-                eyebrow="Four ways to get started"
-                title="The right CRM for your business,"
-                highlight="not a one-size-fits-all."
-                description="Start with our own product, implement a global platform, build something bespoke, or add AI to the CRM you already use."
+                eyebrow={t('crm.models.eyebrow')}
+                title={t('crm.models.title')}
+                highlight={t('crm.models.highlight')}
+                description={t('crm.models.description')}
             />
             <div className="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
                 {CRM_MODELS.map((m, i) => (
@@ -120,17 +167,22 @@ const Models = () => (
             </div>
         </Container>
     </Section>
-);
+    );
+};
 
-const Features = () => (
+const Features = () => {
+    const { t, c } = useI18n();
+    const { CRM_HERO, CRM_SCALE, CRM_MODELS, CRM_FEATURES, CRM_AI, CRM_ADDONS, CRM_INTEGRATIONS, CRM_INDUSTRIES,
+        CRM_STEPS, CRM_RESULTS, CRM_FAQ, CRM_COMPARISON } = c;
+    return (
     <Section id="crm-features" labelledBy="crm-features-title">
         <Container>
             <SectionHeading
                 id="crm-features-title"
-                eyebrow="Featured capabilities"
-                title="Everything your team needs to"
-                highlight="sell and serve better."
-                description="Built-in tools that replace scattered spreadsheets, chats and notebooks with one reliable system."
+                eyebrow={t('crm.features.eyebrow')}
+                title={t('crm.features.title')}
+                highlight={t('crm.features.highlight')}
+                description={t('crm.features.description')}
             />
             <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 {CRM_FEATURES.map((f, i) => (
@@ -149,9 +201,14 @@ const Features = () => (
             </div>
         </Container>
     </Section>
-);
+    );
+};
 
-const Comparison = () => (
+const Comparison = () => {
+    const { t, c } = useI18n();
+    const { CRM_HERO, CRM_SCALE, CRM_MODELS, CRM_FEATURES, CRM_AI, CRM_ADDONS, CRM_INTEGRATIONS, CRM_INDUSTRIES,
+        CRM_STEPS, CRM_RESULTS, CRM_FAQ, CRM_COMPARISON } = c;
+    return (
     <Section id="crm-compare" labelledBy="crm-compare-title" className="bg-ink-950/40">
         <Container>
             <SectionHeading
@@ -166,20 +223,24 @@ const Comparison = () => (
             </Reveal>
         </Container>
     </Section>
-);
+    );
+};
 
-const SPOTLIGHT = CASE_STUDIES.find((c) => c.id === 'signature-shades');
-
-const ClientSpotlight = () => (
+const ClientSpotlight = () => {
+    const { t, c } = useI18n();
+    const { CRM_HERO, CRM_SCALE, CRM_MODELS, CRM_FEATURES, CRM_AI, CRM_ADDONS, CRM_INTEGRATIONS, CRM_INDUSTRIES,
+        CRM_STEPS, CRM_RESULTS, CRM_FAQ, CRM_COMPARISON } = c;
+    const SPOTLIGHT = c.CASE_STUDIES.find((cs) => cs.id === 'signature-shades');
+    return (
     <Section id="crm-client" labelledBy="crm-client-title">
         <Container>
             <Reveal>
                 <article className="grid gap-10 rounded-3xl border border-brand-300/20 bg-gradient-to-br from-brand-500/15 via-ink-850/60 to-glow/5 p-6 md:p-10 lg:grid-cols-12">
                     <div className="lg:col-span-5">
-                        <span className="eyebrow">Client spotlight</span>
+                        <span className="eyebrow">{t('crm.spotlight')}</span>
                         <div className="mt-6 flex items-center gap-4">
                             <span className="flex h-20 w-24 shrink-0 items-center justify-center rounded-2xl bg-white p-2 shadow-glow">
-                                <img src={SPOTLIGHT.client.logo} alt={`${SPOTLIGHT.client.name} logo`} className="h-full w-full object-contain" loading="lazy" />
+                                <img src={SPOTLIGHT.client.logo} alt={t('common.clientLogoAlt', { name: SPOTLIGHT.client.name })} className="h-full w-full object-contain" loading="lazy" />
                             </span>
                             <div>
                                 <p className="font-display text-xl font-semibold text-slate-50">{SPOTLIGHT.client.name}</p>
@@ -189,7 +250,7 @@ const ClientSpotlight = () => (
                         <h2 id="crm-client-title" className="mt-6 text-2xl font-semibold md:text-3xl">{SPOTLIGHT.title}</h2>
                         <p className="mt-3 text-sm leading-relaxed text-slate-400 md:text-base">{SPOTLIGHT.summary}</p>
                         <Button href="/#work" variant="secondary" size="sm" className="mt-7">
-                            More client projects <ArrowUpRight size={16} />
+                            {t('crm.moreProjects')} <ArrowUpRight size={16} />
                         </Button>
                     </div>
                     <div className="lg:col-span-7">
@@ -208,15 +269,20 @@ const ClientSpotlight = () => (
                                 </li>
                             ))}
                         </ul>
-                        <div className="mt-6 flex flex-wrap gap-1.5">{SPOTLIGHT.stack.map((t) => <Badge key={t}>{t}</Badge>)}</div>
+                        <div className="mt-6 flex flex-wrap gap-1.5">{SPOTLIGHT.stack.map((tech) => <Badge key={tech}>{tech}</Badge>)}</div>
                     </div>
                 </article>
             </Reveal>
         </Container>
     </Section>
-);
+    );
+};
 
-const AiSection = () => (
+const AiSection = () => {
+    const { t, c } = useI18n();
+    const { CRM_HERO, CRM_SCALE, CRM_MODELS, CRM_FEATURES, CRM_AI, CRM_ADDONS, CRM_INTEGRATIONS, CRM_INDUSTRIES,
+        CRM_STEPS, CRM_RESULTS, CRM_FAQ, CRM_COMPARISON } = c;
+    return (
     <Section id="crm-ai" labelledBy="crm-ai-title" className="overflow-hidden bg-ink-950/40">
         <div aria-hidden="true" className="absolute left-1/2 top-1/3 -z-10 h-[36rem] w-[56rem] -translate-x-1/2 rounded-full bg-ai/10 blur-[140px]" />
         <Container>
@@ -224,7 +290,7 @@ const AiSection = () => (
                 <div className="lg:col-span-7">
                     <SectionHeading id="crm-ai-title" align="left" eyebrow={CRM_AI.eyebrow} title={CRM_AI.title} highlight={CRM_AI.highlight} description={CRM_AI.description} />
                     <Reveal delay={0.1} className="mt-8">
-                        <Button href={CONTACT}>Get started with CRM AI <ArrowRight size={16} /></Button>
+                        <Button href={CONTACT}>{t('crm.aiCta')} <ArrowRight size={16} /></Button>
                     </Reveal>
                 </div>
                 <Reveal delay={0.1} className="self-end lg:col-span-4 lg:col-start-9"><StatCard stat={CRM_AI.stat} /></Reveal>
@@ -233,12 +299,12 @@ const AiSection = () => (
             <div className="mt-14 grid items-center gap-12 lg:grid-cols-2">
                 <Reveal><AiChatMock /></Reveal>
                 <div className="grid gap-4 sm:grid-cols-2">
-                    {CRM_AI.capabilities.map((c, i) => (
-                        <Reveal key={c.title} delay={i * 0.06}>
+                    {CRM_AI.capabilities.map((cap, i) => (
+                        <Reveal key={cap.title} delay={i * 0.06}>
                             <div className="h-full rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-                                <span className="grid h-10 w-10 place-items-center rounded-lg bg-ai/15 text-violet-200"><Icon name={c.icon} size={18} /></span>
-                                <h3 className="mt-4 text-base font-semibold">{c.title}</h3>
-                                <p className="mt-1.5 text-sm leading-relaxed text-slate-400">{c.description}</p>
+                                <span className="grid h-10 w-10 place-items-center rounded-lg bg-ai/15 text-violet-200"><Icon name={cap.icon} size={18} /></span>
+                                <h3 className="mt-4 text-base font-semibold">{cap.title}</h3>
+                                <p className="mt-1.5 text-sm leading-relaxed text-slate-400">{cap.description}</p>
                             </div>
                         </Reveal>
                     ))}
@@ -246,40 +312,50 @@ const AiSection = () => (
             </div>
         </Container>
     </Section>
-);
+    );
+};
 
-const Addons = () => (
+const Addons = () => {
+    const { t, c } = useI18n();
+    const { CRM_HERO, CRM_SCALE, CRM_MODELS, CRM_FEATURES, CRM_AI, CRM_ADDONS, CRM_INTEGRATIONS, CRM_INDUSTRIES,
+        CRM_STEPS, CRM_RESULTS, CRM_FAQ, CRM_COMPARISON } = c;
+    return (
     <Section id="crm-addons" labelledBy="crm-addons-title" className="overflow-hidden">
         <Container>
             <SectionHeading
                 id="crm-addons-title"
                 align="left"
-                eyebrow="Extend your CRM"
-                title="Available"
-                highlight="add-ons."
-                description="Switch on extra capabilities when you need them. Every add-on works with VIN CRM, and most with leading CRM platforms too."
+                eyebrow={t('crm.addons.eyebrow')}
+                title={t('crm.addons.title')}
+                highlight={t('crm.addons.highlight')}
+                description={t('crm.addons.description')}
             />
             <div className="-mt-6"><AddonsCarousel items={CRM_ADDONS} /></div>
         </Container>
     </Section>
-);
+    );
+};
 
-const IntegrationsAndIndustries = () => (
+const IntegrationsAndIndustries = () => {
+    const { t, c } = useI18n();
+    const { CRM_HERO, CRM_SCALE, CRM_MODELS, CRM_FEATURES, CRM_AI, CRM_ADDONS, CRM_INTEGRATIONS, CRM_INDUSTRIES,
+        CRM_STEPS, CRM_RESULTS, CRM_FAQ, CRM_COMPARISON } = c;
+    return (
     <Section id="crm-industries" labelledBy="crm-industries-title" className="bg-ink-950/40">
         <Container>
             <SectionHeading
                 id="crm-industries-title"
-                eyebrow="Built for your industry"
-                title="Connected to your tools,"
-                highlight="shaped for your sector."
+                eyebrow={t('crm.industries.eyebrow')}
+                title={t('crm.industries.title')}
+                highlight={t('crm.industries.highlight')}
             />
             <Reveal className="mt-10">
                 <div className="flex flex-wrap justify-center gap-2">
                     <span className="flex items-center gap-2 rounded-full border border-brand-300/30 bg-brand-400/10 px-4 py-2 text-sm font-semibold text-brand-100">
-                        <Plug size={15} aria-hidden="true" /> Integrates with
+                        <Plug size={15} aria-hidden="true" /> {t('crm.integratesWith')}
                     </span>
-                    {CRM_INTEGRATIONS.map((t) => (
-                        <span key={t} className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-slate-300">{t}</span>
+                    {CRM_INTEGRATIONS.map((name) => (
+                        <span key={name} className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-slate-300">{name}</span>
                     ))}
                 </div>
             </Reveal>
@@ -296,16 +372,21 @@ const IntegrationsAndIndustries = () => (
             </div>
         </Container>
     </Section>
-);
+    );
+};
 
-const ProcessAndResults = () => (
+const ProcessAndResults = () => {
+    const { t, c } = useI18n();
+    const { CRM_HERO, CRM_SCALE, CRM_MODELS, CRM_FEATURES, CRM_AI, CRM_ADDONS, CRM_INTEGRATIONS, CRM_INDUSTRIES,
+        CRM_STEPS, CRM_RESULTS, CRM_FAQ, CRM_COMPARISON } = c;
+    return (
     <Section id="crm-results" labelledBy="crm-results-title">
         <Container>
             <SectionHeading
                 id="crm-results-title"
-                eyebrow="From kickoff to results"
-                title="Live in weeks,"
-                highlight="improving every month."
+                eyebrow={t('crm.results.eyebrow')}
+                title={t('crm.results.title')}
+                highlight={t('crm.results.highlight')}
             />
             <ol className="mt-14 grid gap-5 md:grid-cols-4">
                 {CRM_STEPS.map((s, i) => (
@@ -320,7 +401,7 @@ const ProcessAndResults = () => (
             <Reveal className="mt-10">
                 <div className="rounded-3xl border border-brand-300/20 bg-gradient-to-br from-brand-500/15 via-white/[0.02] to-ai/10 p-6 md:p-9">
                     <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-brand-300">
-                        <Clock size={13} aria-hidden="true" /> Typical results from our CRM engagements
+                        <Clock size={13} aria-hidden="true" /> {t('crm.typicalResults')}
                     </p>
                     <dl className="mt-6 grid grid-cols-2 gap-6 md:grid-cols-4">
                         {CRM_RESULTS.map((r) => (
@@ -334,9 +415,14 @@ const ProcessAndResults = () => (
             </Reveal>
         </Container>
     </Section>
-);
+    );
+};
 
-const FinalCta = () => (
+const FinalCta = () => {
+    const { t, c } = useI18n();
+    const { CRM_HERO, CRM_SCALE, CRM_MODELS, CRM_FEATURES, CRM_AI, CRM_ADDONS, CRM_INTEGRATIONS, CRM_INDUSTRIES,
+        CRM_STEPS, CRM_RESULTS, CRM_FAQ, CRM_COMPARISON } = c;
+    return (
     <Section padding="pb-24" labelledBy="crm-cta-title">
         <Container>
             <Reveal>
@@ -344,34 +430,40 @@ const FinalCta = () => (
                     <div aria-hidden="true" className="absolute inset-0 bg-grid opacity-40 mask-radial" />
                     <div className="relative">
                         <h2 id="crm-cta-title" className="text-balance text-3xl font-semibold md:text-4xl">
-                            Ready to see your <span className="text-gradient">customers clearly?</span>
+                            {t('crm.cta.title')} <span className="text-gradient">{t('crm.cta.highlight')}</span>
                         </h2>
                         <p className="mx-auto mt-4 max-w-xl text-slate-400">
-                            Book a free requirement analysis and live demo. We’ll show you what your CRM could look like, built around your process.
+                            {t('crm.cta.text')}
                         </p>
                         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-                            <Button href={CONTACT} size="lg">Book a CRM demo <ArrowRight size={18} /></Button>
-                            <Button href="/#work" variant="secondary" size="lg">See our work</Button>
+                            <Button href={CONTACT} size="lg">{t('crm.demo')} <ArrowRight size={18} /></Button>
+                            <Button href="/#work" variant="secondary" size="lg">{t('crm.cta.work')}</Button>
                         </div>
                     </div>
                 </div>
             </Reveal>
         </Container>
     </Section>
-);
+    );
+};
 
 const CrmSolutions = () => {
+    const { t, c } = useI18n();
+    const { CRM_HERO, CRM_SCALE, CRM_MODELS, CRM_FEATURES, CRM_AI, CRM_ADDONS, CRM_INTEGRATIONS, CRM_INDUSTRIES,
+        CRM_STEPS, CRM_RESULTS, CRM_FAQ, CRM_COMPARISON } = c;
+    const jsonLd = useMemo(() => serviceJsonLd(CRM_HERO), [CRM_HERO]);
     useSeo({
-        title: 'CRM Solutions in Sri Lanka: VIN CRM, Salesforce, Dynamics 365 & AI',
-        description: 'CRM solutions for Sri Lankan businesses: our VIN CRM, Salesforce, Dynamics 365, HubSpot and Zoho implementation, custom CRM development and AI lead scoring.',
+        title: t('seo.crm.title'),
+        description: t('seo.crm.description'),
         keywords: 'CRM Sri Lanka, CRM software, Salesforce implementation, Dynamics 365 CRM, HubSpot, Zoho CRM, custom CRM development, AI CRM, WhatsApp CRM',
         path: '/crm-solutions',
-        jsonLd: serviceJsonLd,
+        jsonLd,
     });
 
     return (
         <PageLayout>
             <Hero />
+            <ScaleProof />
             <Models />
             <Features />
             <Comparison />
@@ -383,9 +475,9 @@ const CrmSolutions = () => {
             <FAQ
                 id="crm-faq"
                 items={CRM_FAQ}
-                title="CRM questions,"
-                highlight="answered."
-                description="Not sure which option fits? Ask us. We’ll recommend one after a free requirement analysis."
+                title={t('crm.faq.title')}
+                highlight={t('crm.faq.highlight')}
+                description={t('crm.faq.description')}
             />
             <FinalCta />
         </PageLayout>

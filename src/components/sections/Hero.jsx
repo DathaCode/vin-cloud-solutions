@@ -1,10 +1,11 @@
 import React, { lazy } from 'react';
 import { ArrowRight, MousePointer2, Sparkles } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { HERO_STATS } from '../../utils/constants';
 import Button from '../common/Button';
 import Container from '../common/Container';
 import SceneMount from '../three/SceneMount';
+import { useI18n } from '../../i18n/I18nProvider';
+import Rich from '../../i18n/Rich';
 
 const HeroGlobe = lazy(() => import('../three/HeroGlobe'));
 
@@ -15,6 +16,7 @@ const GlobeFallback = () => (
 );
 
 const Hero = () => {
+    const { t, c } = useI18n();
     const reduce = useReducedMotion();
     const fade = (delay) => ({
         initial: reduce ? false : { opacity: 0, y: 24 },
@@ -36,7 +38,7 @@ const Hero = () => {
                     <div className="relative z-10 lg:col-span-6 xl:col-span-6">
                         <motion.a href="/#ai" {...fade(0)} className="eyebrow mb-7 hover:border-brand-300/50">
                             <Sparkles size={14} className="text-glow" />
-                            Now delivering AI-powered implementations
+                            {t('hero.eyebrow')}
                             <ArrowRight size={14} />
                         </motion.a>
 
@@ -45,29 +47,25 @@ const Hero = () => {
                             {...fade(0.08)}
                             className="text-balance text-4xl font-semibold leading-[1.05] sm:text-5xl md:text-6xl xl:text-7xl"
                         >
-                            Reimagine what’s <span className="text-gradient animate-shimmer">possible</span> through technology.
+                            {t('hero.titleBefore')}<span className="text-gradient animate-shimmer">{t('hero.titleHighlight')}</span>{t('hero.titleAfter')}
                         </motion.h1>
 
                         <motion.p {...fade(0.16)} className="mt-6 max-w-xl text-base leading-relaxed text-slate-400 md:text-lg">
-                            VIN Cloud Solutions is at the forefront of South Asia’s digital transformation. We help organizations
-                            modernize and scale with <strong className="font-medium text-slate-200">AI-powered innovation</strong>,{' '}
-                            <strong className="font-medium text-slate-200">web &amp; mobile software</strong>, technical solutioning and{' '}
-                            <strong className="font-medium text-slate-200">cloud consultation</strong> across AWS, Azure, Google, Microsoft 365,
-                            Oracle and Atlassian.
+                            <Rich text={t('hero.description')} />
                         </motion.p>
 
                         <motion.div {...fade(0.24)} className="mt-9 flex flex-col gap-3 sm:flex-row">
                             <Button href="/#contact" size="lg">
-                                Start your transformation
+                                {t('hero.cta')}
                                 <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
                             </Button>
                             <Button href="/#services" variant="secondary" size="lg">
-                                Explore services
+                                {t('hero.secondary')}
                             </Button>
                         </motion.div>
 
                         <motion.dl {...fade(0.32)} className="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-4">
-                            {HERO_STATS.map((stat) => (
+                            {c.HERO_STATS.map((stat) => (
                                 <div key={stat.label} className="flex flex-col-reverse bg-ink-900/90 p-4">
                                     <dt className="mt-1 text-xs text-slate-500">{stat.label}</dt>
                                     <dd className="font-display text-xl font-semibold text-slate-50 md:text-2xl">{stat.value}</dd>
@@ -84,6 +82,7 @@ const Hero = () => {
                     >
                         <SceneMount
                             scene={HeroGlobe}
+                            labels={t('hero.globe')}
                             fallback={<GlobeFallback />}
                             className="relative mx-auto aspect-square w-full max-w-[640px] cursor-grab active:cursor-grabbing"
                         />
@@ -94,12 +93,12 @@ const Hero = () => {
                                 <img src="/brand/vin-logo.png" alt="" className="h-8 w-auto" width="575" height="627" />
                             </span>
                             <span className="text-xs leading-tight">
-                                <span className="block font-semibold text-slate-100">South Asia hub</span>
-                                <span className="text-slate-400">Connected to global cloud regions</span>
+                                <span className="block font-semibold text-slate-100">{t('hero.hubTitle')}</span>
+                                <span className="text-slate-400">{t('hero.hubText')}</span>
                             </span>
                         </div>
                         <p className="pointer-events-none absolute right-2 top-4 hidden items-center gap-1.5 font-mono text-[11px] text-slate-500 md:flex">
-                            <MousePointer2 size={12} /> drag to explore
+                            <MousePointer2 size={12} /> {t('hero.drag')}
                         </p>
                     </motion.div>
                 </div>

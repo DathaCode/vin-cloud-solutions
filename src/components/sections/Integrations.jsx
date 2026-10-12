@@ -1,5 +1,4 @@
 import React from 'react';
-import { INTEGRATIONS } from '../../utils/constants';
 import Container from '../common/Container';
 import Section from '../common/Section';
 import SectionHeading from '../common/SectionHeading';
@@ -7,8 +6,11 @@ import SpotlightCard from '../common/SpotlightCard';
 import Reveal from '../common/Reveal';
 import Badge from '../common/Badge';
 import Icon from '../common/Icon';
+import { useI18n } from '../../i18n/I18nProvider';
 
-const Integrations = () => (
+const Integrations = () => {
+    const { t, c } = useI18n();
+    return (
     <Section id="integrations" labelledBy="integrations-title">
         <Container>
             <div className="grid gap-12 lg:grid-cols-12">
@@ -17,10 +19,10 @@ const Integrations = () => (
                         <SectionHeading
                             id="integrations-title"
                             align="left"
-                            eyebrow="Integrations & development"
-                            title="If it has an API,"
-                            highlight="we can connect it."
-                            description="Any kind of development and integration: identity, business systems, collaboration suites and custom platforms working as one, with secure and observable data flows."
+                            eyebrow={t('integrations.eyebrow')}
+                            title={t('integrations.title')}
+                            highlight={t('integrations.highlight')}
+                            description={t('integrations.description')}
                         />
                         <Reveal delay={0.15}>
                             <pre className="mt-8 overflow-x-auto rounded-2xl border border-white/10 bg-ink-950/80 p-5 font-mono text-xs leading-relaxed text-slate-400">
@@ -38,7 +40,7 @@ const Integrations = () => (
                 </div>
 
                 <div className="grid gap-5 sm:grid-cols-2 lg:col-span-8">
-                    {INTEGRATIONS.map((item, i) => (
+                    {c.INTEGRATIONS.map((item, i) => (
                         <Reveal key={item.title} delay={(i % 2) * 0.08}>
                             <SpotlightCard as="article" className="h-full">
                                 <div className="flex h-full flex-col p-6 md:p-7">
@@ -58,6 +60,7 @@ const Integrations = () => (
             </div>
         </Container>
     </Section>
-);
+    );
+};
 
 export default Integrations;

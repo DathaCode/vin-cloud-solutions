@@ -37,6 +37,7 @@ description: Conventions for building or changing React components, home-page se
 | `PageLayout` | skip link + Navbar + `<main id="main">` + Footer + floating WhatsApp button. Every page uses it. |
 
 ## Conventions
+- **No hard-coded visible text.** Use `const { t, c } = useI18n()` (skill `i18n`); content arrays come from `c`, not from importing constants.js.
 - Match surrounding code: 4-space indent, single quotes, named section components exported default, comments only for non-obvious "why".
 - One `<h1>` per page (Hero / page header). Sections use h2 via `SectionHeading`; cards use h3.
 - Copy and lists belong in `constants.js`, not hard-coded in components (see `site-content` skill).

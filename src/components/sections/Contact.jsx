@@ -7,16 +7,20 @@ import SectionHeading from '../common/SectionHeading';
 import Reveal from '../common/Reveal';
 import BrandIcon from '../common/BrandIcon';
 import RequestForm from '../contact/RequestForm';
+import { useI18n } from '../../i18n/I18nProvider';
+import Rich from '../../i18n/Rich';
 
 const telHref = `tel:${COMPANY_INFO.phone.replace(/[^\d+]/g, '')}`;
 
 const CHANNELS = [
-    { Icon: Phone, label: 'Call us', value: COMPANY_INFO.phone, href: telHref },
-    { Icon: Mail, label: 'Email', value: COMPANY_INFO.email, href: `mailto:${COMPANY_INFO.email}` },
-    { Icon: MapPin, label: 'Office', value: COMPANY_INFO.location, href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(COMPANY_INFO.location)}`, external: true },
+    { Icon: Phone, labelKey: 'contact.call', value: COMPANY_INFO.phone, href: telHref },
+    { Icon: Mail, labelKey: 'contact.email', value: COMPANY_INFO.email, href: `mailto:${COMPANY_INFO.email}` },
+    { Icon: MapPin, labelKey: 'contact.office', value: COMPANY_INFO.location, href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(COMPANY_INFO.location)}`, external: true },
 ];
 
-const Contact = () => (
+const Contact = () => {
+    const { t } = useI18n();
+    return (
     <Section id="contact" labelledBy="contact-title" className="overflow-hidden">
         <div aria-hidden="true" className="absolute inset-0 -z-10">
             <div className="absolute inset-0 bg-grid opacity-50 mask-radial" />
@@ -29,15 +33,15 @@ const Contact = () => (
                     <SectionHeading
                         id="contact-title"
                         align="left"
-                        eyebrow="Start a project"
-                        title="Ready to reimagine"
-                        highlight="what’s possible?"
-                        description="Tell us what you need in about two minutes. A solution architect will get back to you within 24 hours, with no obligation."
+                        eyebrow={t('contact.eyebrow')}
+                        title={t('contact.title')}
+                        highlight={t('contact.highlight')}
+                        description={t('contact.description')}
                     />
 
                     <Reveal delay={0.1}>
                         <a
-                            href={`${WHATSAPP_URL}?text=${encodeURIComponent('Hi VIN Cloud Solutions, I would like to discuss a project.')}`}
+                            href={`${WHATSAPP_URL}?text=${encodeURIComponent(t('contact.waMessage'))}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="group mt-8 flex items-center gap-4 rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-4 transition-colors hover:bg-emerald-400/15"
@@ -46,14 +50,14 @@ const Contact = () => (
                                 <BrandIcon name="whatsapp" size={22} />
                             </span>
                             <span>
-                                <span className="block text-sm font-semibold text-white">Chat on WhatsApp</span>
-                                <span className="text-sm text-emerald-200/80">Quick questions? Message us at {COMPANY_INFO.phone}</span>
+                                <span className="block text-sm font-semibold text-white">{t('contact.waTitle')}</span>
+                                <span className="text-sm text-emerald-200/80">{t('contact.waText', { phone: COMPANY_INFO.phone })}</span>
                             </span>
                         </a>
 
                         <ul className="mt-6 space-y-4 text-sm">
-                            {CHANNELS.map(({ Icon, label, value, href, external }) => (
-                                <li key={label}>
+                            {CHANNELS.map(({ Icon, labelKey, value, href, external }) => (
+                                <li key={labelKey}>
                                     <a
                                         href={href}
                                         {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
@@ -63,7 +67,7 @@ const Contact = () => (
                                             <Icon size={18} aria-hidden="true" />
                                         </span>
                                         <span>
-                                            <span className="block font-mono text-[11px] uppercase tracking-[0.15em] text-slate-500">{label}</span>
+                                            <span className="block font-mono text-[11px] uppercase tracking-[0.15em] text-slate-500">{t(labelKey)}</span>
                                             <span className="font-medium text-slate-200">{value}</span>
                                         </span>
                                     </a>
@@ -74,11 +78,11 @@ const Contact = () => (
                         <div className="mt-8 grid grid-cols-2 gap-3 text-xs text-slate-400">
                             <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
                                 <Clock size={16} className="mb-2 text-brand-300" aria-hidden="true" />
-                                Reply within <span className="text-slate-200">24 hours</span>
+                                <Rich text={t('contact.reply')} strongClassName="font-normal text-slate-200" />
                             </div>
                             <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
                                 <ShieldCheck size={16} className="mb-2 text-brand-300" aria-hidden="true" />
-                                <span className="text-slate-200">NDA</span> available on request
+                                <Rich text={t('contact.nda')} strongClassName="font-normal text-slate-200" />
                             </div>
                         </div>
                     </Reveal>
@@ -90,6 +94,7 @@ const Contact = () => (
             </div>
         </Container>
     </Section>
-);
+    );
+};
 
 export default Contact;

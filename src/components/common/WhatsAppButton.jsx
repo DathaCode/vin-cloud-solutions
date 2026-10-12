@@ -3,18 +3,20 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { WHATSAPP_URL } from '../../utils/constants';
 import { useScrollPosition } from '../../hooks/useScrollPosition';
 import BrandIcon from './BrandIcon';
+import { useI18n } from '../../i18n/I18nProvider';
 
 /** Floating quick-contact button; appears once the visitor starts scrolling. */
 const WhatsAppButton = () => {
+    const { t } = useI18n();
     const visible = useScrollPosition() > 400;
     const reduce = useReducedMotion();
 
     return (
         <motion.a
-            href={`${WHATSAPP_URL}?text=${encodeURIComponent('Hi VIN Cloud Solutions, I have a question.')}`}
+            href={`${WHATSAPP_URL}?text=${encodeURIComponent(t('whatsapp.message'))}`}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Chat with us on WhatsApp"
+            aria-label={t('whatsapp.aria')}
             initial={false}
             animate={visible ? { opacity: 1, y: 0, pointerEvents: 'auto' } : { opacity: 0, y: reduce ? 0 : 20, pointerEvents: 'none' }}
             transition={{ duration: 0.25 }}
@@ -22,7 +24,7 @@ const WhatsAppButton = () => {
         >
             <BrandIcon name="whatsapp" size={24} />
             <span className="hidden max-w-0 overflow-hidden whitespace-nowrap text-sm font-semibold transition-all duration-300 group-hover:max-w-[8rem] group-hover:pr-1 md:inline">
-                Chat with us
+                {t('whatsapp.label')}
             </span>
         </motion.a>
     );

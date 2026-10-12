@@ -1,13 +1,15 @@
 import React from 'react';
-import { COMPANY_INFO, WHY_CHOOSE_US } from '../../utils/constants';
 import Container from '../common/Container';
 import Section from '../common/Section';
 import SectionHeading from '../common/SectionHeading';
 import SpotlightCard from '../common/SpotlightCard';
 import Reveal from '../common/Reveal';
 import Icon from '../common/Icon';
+import { useI18n } from '../../i18n/I18nProvider';
 
-const WhyChooseUs = () => (
+const WhyChooseUs = () => {
+    const { t, c } = useI18n();
+    return (
     <Section id="about" labelledBy="about-title">
         <Container>
             <div className="grid items-center gap-14 lg:grid-cols-2">
@@ -15,12 +17,12 @@ const WhyChooseUs = () => (
                     <SectionHeading
                         id="about-title"
                         align="left"
-                        eyebrow="Why VIN Cloud"
-                        title="Modernize, scale and thrive,"
-                        highlight="one solution at a time."
+                        eyebrow={t('why.eyebrow')}
+                        title={t('why.title')}
+                        highlight={t('why.highlight')}
                     />
                     <Reveal delay={0.1}>
-                        <p className="mt-6 text-base leading-relaxed text-slate-400 md:text-lg">{COMPANY_INFO.summary}</p>
+                        <p className="mt-6 text-base leading-relaxed text-slate-400 md:text-lg">{c.COMPANY_INFO.summary}</p>
                     </Reveal>
 
                     {/* Logo showcase */}
@@ -29,19 +31,19 @@ const WhyChooseUs = () => (
                             <div aria-hidden="true" className="absolute inset-0 rounded-full border border-dashed border-brand-300/30 animate-spin-slow" />
                             <div aria-hidden="true" className="absolute inset-3 rounded-full bg-brand-400/20 blur-xl" />
                             <div className="relative grid h-24 w-24 place-items-center rounded-3xl bg-gradient-to-br from-white to-brand-50 shadow-glow-lg">
-                                <img src="/brand/vin-logo.png" alt="VIN Cloud Solutions logo" className="h-16 w-auto" width="575" height="627" loading="lazy" />
+                                <img src="/brand/vin-logo.png" alt={t('common.logoAlt')} className="h-16 w-auto" width="575" height="627" loading="lazy" />
                             </div>
                         </div>
                         <div>
                             <p className="font-display text-xl font-semibold text-slate-50">VIN Cloud Solutions</p>
-                            <p className="mt-1 text-sm text-slate-400">AI · Software · Cloud · Integrations</p>
-                            <p className="mt-1 font-mono text-xs text-brand-300">{COMPANY_INFO.location} · Serving {COMPANY_INFO.region}</p>
+                            <p className="mt-1 text-sm text-slate-400">{t('why.tagline')}</p>
+                            <p className="mt-1 font-mono text-xs text-brand-300">{t('why.serving', { location: c.COMPANY_INFO.location, region: c.COMPANY_INFO.region })}</p>
                         </div>
                     </Reveal>
                 </div>
 
                 <div className="grid gap-5 sm:grid-cols-2">
-                    {WHY_CHOOSE_US.map((item, i) => (
+                    {c.WHY_CHOOSE_US.map((item, i) => (
                         <Reveal key={item.title} delay={i * 0.06}>
                             <SpotlightCard as="article" className="h-full">
                                 <div className="p-6">
@@ -58,6 +60,7 @@ const WhyChooseUs = () => (
             </div>
         </Container>
     </Section>
-);
+    );
+};
 
 export default WhyChooseUs;

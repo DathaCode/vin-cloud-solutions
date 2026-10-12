@@ -3,8 +3,12 @@
 Marketing site for **VIN Cloud Solutions** (Ragama, Sri Lanka): AI solutions & integrations, web/mobile development,
 cloud consulting (AWS, Azure, Google, Microsoft 365, Oracle, Atlassian), data migration and managed cloud.
 Live domain: **https://cloud.vinsolutions.lk**. React SPA: home page, `/crm-solutions` page, markdown blog.
+**Trilingual: English (source), Swedish, Italian** via a language switcher (client-side, same URLs).
 
 ## Working rules (from the owner)
+- **Every text change must update the language layer in the same task.** Any new or edited English copy (UI strings,
+  constants/crmContent data, blog posts) needs its Swedish and Italian versions; finish with `npm run i18n:check` →
+  `i18n OK`, then `npm run i18n:accept`. Never hard-code visible text in components. See skill `i18n`.
 - **Never commit, push or create branches.** The owner commits everything. Leave changes in the working tree.
 - Ask before anything outward-facing (real form submissions, deploys, publishing).
 - **Hosting = AWS Amplify connected to GitHub** (`DathaCode/Cloud-Consulting---Reselling-Platform`, branch `main`). Amplify builds from
@@ -17,6 +21,10 @@ Live domain: **https://cloud.vinsolutions.lk**. React SPA: home page, `/crm-solu
   use them for structure ideas only, never their wording, and never mention them on the site.
 - **No em dashes (—) anywhere in website copy** (src/, index.html, public/). Use commas, colons, periods or parentheses.
 - **Never publish prices or budgets.** Pricing is quoted in LKR after requirement analysis — say that, nothing more.
+- CRM copy: languages are "any language you need" (never list Sinhala/Tamil/English); never claim a "local team"
+  (use "dedicated industry experts"). Real proof point: we planned, developed and maintain CRM, OM and CPOS systems
+  for a telecom company serving **8.9 million customers island-wide** (`CRM_SCALE`); the telecom client stays unnamed.
+- Client logos appear only on their Our work case studies (no "Trusted by" strip on the home page).
 - Case studies: 2 named client projects (facts only), 2 featured in-house AI products (real), and 5 anonymous engagements
   with owner-approved representative figures.
 - Keep the look: slightly dark, techy, brand teal from the logo. Verify UI changes visually (skill `ui-verification`).
@@ -36,6 +44,8 @@ npm run preview   # serve dist/ on :4173 (use for screenshots)
 ## Where things live
 | Path | What |
 |---|---|
+| `src/i18n/` | Language layer: `ui/{en,sv,it}.js` (interface strings), `content/{sv,it}.js` (overlays for constants + crmContent), `I18nProvider` (`useI18n()` → `t`, `c`, `lang`, `locale`), `languages.js`, `Rich.jsx` |
+| `scripts/i18n.mjs` | `npm run i18n:check` / `i18n:accept` / `i18n:export` (review CSV in `docs/translations-review.csv`) |
 | `src/utils/constants.js` | **All site copy & data**: company info, nav, services, AI capabilities, platforms, integrations, process, case studies, FAQ, socials |
 | `src/utils/crmContent.js` | Copy for the `/crm-solutions` page (hero, 4 delivery models, features, AI, add-ons, industries, steps, results, CRM FAQ) |
 | `src/pages/CrmSolutions.jsx` + `src/components/crm/` | CRM page and its HTML/CSS mocks (dashboard, feature previews, AI chat, add-ons carousel) |
@@ -44,7 +54,7 @@ npm run preview   # serve dist/ on :4173 (use for screenshots)
 | `src/components/three/` | 3D explorers (HeroGlobe, NeuralScene, EcosystemScene) + `SceneMount` lazy/visibility wrapper |
 | `src/components/contact/` | Multi-step project request form (Formspree) |
 | `src/utils/seo.js` | `useSeo()` per-route head tags; defaults live in `index.html` |
-| `src/content/blog/*.md` | Blog posts (must also be imported in `src/hooks/useBlogData.js` and added to `public/sitemap.xml`) |
+| `src/content/blog/*.md` | English blog posts; translations in `blog/sv/` and `blog/it/` with the same `slug` (auto-loaded). Add new posts to `public/sitemap.xml` |
 | `public/brand/` | Logo (`vin-logo.png`), mark (`vin-mark.png`), OG image, PWA icons |
 | `design/brand-source/` | Original logo artwork (not deployed) — source for regenerating icons/OG image |
 | `amplify.yml` | Amplify build spec (Node 20, `npm ci --cache .npm`, build, publish `dist/`) |
@@ -60,6 +70,7 @@ Formspree endpoint `https://formspree.io/f/mppqanpv` (`VITE_FORMSPREE_ENDPOINT` 
 ## Project skills (`.claude/skills/`) — load the matching one before working
 | Skill | Use for |
 |---|---|
+| `i18n` | **Any text change**: English + Swedish + Italian, check/accept workflow |
 | `react-frontend` | Components, sections, design tokens, routing, styling conventions |
 | `three-scenes` | Anything in `src/components/three/` or adding 3D |
 | `site-content` | Editing copy, services, case studies, FAQ, blog posts |
@@ -84,6 +95,8 @@ Formspree endpoint `https://formspree.io/f/mppqanpv` (`VITE_FORMSPREE_ENDPOINT` 
 - A clean-copy build (`npm ci --cache .npm --prefer-offline && npm run build`, as in `amplify.yml`) was verified 2026-10-05 — re-run it after dependency changes.
 - The CSP in `customHttp.yml` was verified locally (3D, blog deep links, form) — any new third-party domain must be added to it.
 - react-markdown runs without remark-gfm: blog tables/strikethrough don't render.
+- Git Bash rewrites args like `/crm-solutions` into Windows paths; prefix Node test commands with `MSYS_NO_PATHCONV=1`.
+- R3F canvases don't need context for text: pass translated strings to 3D scenes as props.
 - Headless Chrome with `--use-angle=swiftshader` draws fake horizontal "washed" bands across translucent cards on long pages. For pages
   without WebGL, screenshot with `--disable-gpu` instead before treating it as a CSS bug.
 - `vite preview` may listen on IPv6 only; if Puppeteer gets ERR_CONNECTION_REFUSED on localhost, use `http://[::1]:4173`.

@@ -10,6 +10,23 @@ export const CRM_HERO = {
     stat: { value: '+30%', label: 'more leads converted', note: 'Typical uplift within the first 6 months' },
 };
 
+// Real engagement (owner-confirmed). The telecommunications client stays unnamed.
+export const CRM_SCALE = {
+    value: '8.9M',
+    label: 'customers served island-wide',
+    note: 'Telecom CRM, OM & CPOS platforms we built and maintain',
+    eyebrow: 'Proven at national scale',
+    title: 'Trusted with',
+    highlight: '8.9 million customers.',
+    description:
+        'We planned, developed and maintain CRM, order management (OM) and CPOS systems for a leading telecommunications company, serving 8.9 million customers across the island. The same engineering discipline goes into every CRM we deliver, whatever your size.',
+    points: [
+        { icon: 'Compass', title: 'Planned', text: 'Architecture designed for national-scale customer volumes' },
+        { icon: 'Code2', title: 'Developed', text: 'CRM, order management and CPOS built as one connected platform' },
+        { icon: 'ShieldCheck', title: 'Maintained', text: 'Kept secure, stable and evolving for millions of daily customers' },
+    ],
+};
+
 export const CRM_MODELS = [
     {
         id: 'vin-crm',
@@ -17,7 +34,7 @@ export const CRM_MODELS = [
         badge: 'Our product',
         title: 'VIN CRM',
         description: 'Our ready-to-use, cloud-hosted CRM for growing businesses: pipelines, automation, WhatsApp and AI included, configured for you in days.',
-        points: ['Fast setup on secure cloud', 'Sinhala, Tamil & English templates', 'Mobile app for field teams'],
+        points: ['Fast setup on secure cloud', 'Templates in any language you need', 'Mobile app for field teams'],
     },
     {
         id: 'platforms',
@@ -120,7 +137,7 @@ export const CRM_ADDONS = [
     { icon: 'Video', title: 'Video messages', description: 'Record short personal videos and share them by email or WhatsApp to stand out and build trust.' },
     { icon: 'FileSignature', title: 'Quotes & e-signatures', description: 'Generate branded quotations and contracts from the CRM and collect e-signatures in minutes.' },
     { icon: 'CloudDownload', title: 'Data warehouse sync', description: 'Stream CRM data securely to your cloud warehouse or BI tools, with no manual exports.' },
-    { icon: 'Languages', title: 'Multilingual templates', description: 'Sinhala, Tamil and English message templates and AI drafts that speak your customers’ language.' },
+    { icon: 'Languages', title: 'Multilingual templates', description: 'Message templates and AI drafts in any language your customers speak, switchable per contact.' },
 ];
 
 export const CRM_INTEGRATIONS = [
@@ -194,7 +211,7 @@ export const CRM_COMPARISON = {
     title: 'More than software,',
     highlight: 'a CRM that fits how you work.',
     description:
-        'Generic tools give you features. We give you a CRM shaped around your sales, service and operations, connected to your systems and supported by a local team.',
+        'Generic tools give you features. We give you a CRM shaped around your sales, service and operations, connected to your systems and supported by dedicated industry experts.',
     columns: [
         { id: 'vin', label: 'VIN Cloud CRM', highlight: true },
         { id: 'generic', label: 'Off-the-shelf CRM' },
@@ -204,10 +221,10 @@ export const CRM_COMPARISON = {
         { label: 'Complete CRM features: pipelines, tasks, reporting', vin: 'yes', generic: 'yes', manual: 'no' },
         { label: 'WhatsApp, Facebook and web chat in one inbox', vin: 'yes', generic: 'partial', manual: 'partial' },
         { label: 'AI lead scoring, drafted follow-ups and 24/7 assistant', vin: 'yes', generic: 'partial', manual: 'no' },
-        { label: 'Sinhala, Tamil and English templates', vin: 'yes', generic: 'partial', manual: 'no' },
+        { label: 'Templates and AI drafts in any language you need', vin: 'yes', generic: 'partial', manual: 'no' },
         { label: 'Built around your workflows: quotes, orders, production', vin: 'yes', generic: 'partial', manual: 'no' },
         { label: 'Integrated with your ERP, accounting and legacy systems', vin: 'yes', generic: 'partial', manual: 'no' },
         { label: 'Data migration, clean-up and team training included', vin: 'yes', generic: 'no', manual: 'no' },
-        { label: 'Ongoing optimization by a dedicated local team', vin: 'yes', generic: 'no', manual: 'no' },
+        { label: 'Ongoing optimization by dedicated industry experts', vin: 'yes', generic: 'no', manual: 'no' },
     ],
 };

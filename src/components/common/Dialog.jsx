@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
+import { useI18n } from '../../i18n/I18nProvider';
 
 /** Accessible modal: Esc / backdrop to close, focus moved in and restored, page scroll locked. */
 const Dialog = ({ open, onClose, labelledBy, children, className = '' }) => {
+    const { t } = useI18n();
     const panel = useRef(null);
 
     useEffect(() => {
@@ -53,7 +55,7 @@ const Dialog = ({ open, onClose, labelledBy, children, className = '' }) => {
                     >
                         <button
                             onClick={onClose}
-                            aria-label="Close"
+                            aria-label={t('common.close')}
                             className="absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-ink-900/80 text-slate-300 hover:text-white"
                         >
                             <X size={18} />

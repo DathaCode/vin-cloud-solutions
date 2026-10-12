@@ -7,9 +7,11 @@ import BlogPost from '../components/blog/BlogPost';
 import { useBlogData } from '../hooks/useBlogData';
 import { useSeo } from '../utils/seo';
 import { SITE_URL } from '../utils/constants';
+import { useI18n } from '../i18n/I18nProvider';
 
 const BlogPostPage = () => {
     const { slug } = useParams();
+    const { t, lang } = useI18n();
     const { getPostBySlug, loading } = useBlogData();
     const post = getPostBySlug(slug);
 
@@ -29,12 +31,13 @@ const BlogPostPage = () => {
                 },
                 mainEntityOfPage: `${SITE_URL}/blog/${post.slug}`,
                 keywords: post.tags?.join(', '),
+                inLanguage: lang,
             },
-        [post]
+        [post, lang]
     );
 
     useSeo({
-        title: post?.title || (loading ? undefined : 'Article not found'),
+        title: post?.title || (loading ? undefined : t('blog.notFoundTitle')),
         description: post?.excerpt,
         keywords: post?.tags?.join(', '),
         path: `/blog/${slug}`,
@@ -52,10 +55,10 @@ const BlogPostPage = () => {
                     ) : (
                         !loading && (
                             <div className="py-20 text-center">
-                                <h1 className="text-4xl font-semibold">Article not found</h1>
-                                <p className="mt-4 text-slate-400">The article you’re looking for doesn’t exist or has moved.</p>
+                                <h1 className="text-4xl font-semibold">{t('blog.notFoundTitle')}</h1>
+                                <p className="mt-4 text-slate-400">{t('blog.notFoundText')}</p>
                                 <Link to="/blog" className="mt-8 inline-block font-semibold text-brand-200 hover:text-glow">
-                                    ← Back to all articles
+                                    ← {t('blog.backAll')}
                                 </Link>
                             </div>
                         )
